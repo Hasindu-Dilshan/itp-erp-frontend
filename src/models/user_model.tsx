@@ -1,4 +1,4 @@
-export interface IUserData extends Document {
+export default interface User {
     email: string,
     password: string,
     displayName: string,

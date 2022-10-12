@@ -1,5 +1,6 @@
 export interface PhurchaseRequest {
     _id: string,
+    date: Date,
     orderNumber: string,
     referenceNumber: string,
     shippingAddress: string,
