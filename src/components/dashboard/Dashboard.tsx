@@ -4,36 +4,58 @@ import type { MenuProps } from 'antd';
 import { Layout, Menu } from 'antd';
 import React, { useState } from 'react';
 import { Typography } from 'antd';
+import WrapperCard from "../common/WrapperCard";
+import DashboardBody from "./DashboardBody";
+import Customer from "../customers/Customer";
+import DeliveryOrder from "../orders/delivery_order/DeliveryOrder";
+import SalesOrder from "../orders/sales_order/SalesOrder";
+import PurchaseOrder from "../orders/purchase_order/PurchaseOrder";
+import PurchaseRequest from "../purchase_request/PurchaseRequest";
+import PuchaseItems from "../purchase_item/PuchaseItems";
+import Users from "../Users/Users";
 const { Header, Content, Footer, Sider } = Layout;
 const { Title } = Typography;
 type MenuItem = Required<MenuProps>['items'][number];
 
-function getItem(
-    label: React.ReactNode,
-    key: React.Key,
 
-    children?: MenuItem[],
-): MenuItem {
-    return {
-        key,
-
-        children,
-        label,
-    } as MenuItem;
-}
-const items: MenuItem[] = [
-    getItem('Sales 1', '1',),
-    getItem('Option 2', '2',),
-    getItem('User', 'sub1', [
-        getItem('Tom', '3'),
-        getItem('Bill', '4'),
-        getItem('Alex', '5'),
-    ]),
-    getItem('Team', 'sub2', [getItem('Team 1', '6'), getItem('Team 2', '8')]),
-    getItem('Files', '9',),
-];
 const Dashboard = () => {
+    function getItem(
+        label: React.ReactNode,
+        key: number,
+
+
+    ): MenuItem {
+        return {
+            key,
+            label,
+            onClick: () => { setActiveIndex(key) }
+        } as MenuItem;
+    }
+    const items: MenuItem[] = [
+        getItem('Dashboard', 0,),
+        getItem('Customers', 1,),
+        getItem('Delivery Order', 2),
+        getItem('Sales Order', 3),
+        getItem('Purchase Order', 4),
+        getItem('Purchase Request', 5),
+        getItem('Purchase Items', 6),
+        getItem('Users', 7,),
+    ];
+
+
     const [collapsed, setCollapsed] = useState(false);
+    const [activeIndex, setActiveIndex] = useState(0);
+
+    const bodyContainer: JSX.Element[] = [
+        <DashboardBody />,
+        <Customer />,
+        <DeliveryOrder />,
+        <SalesOrder />,
+        <PurchaseOrder />,
+        <PurchaseRequest />,
+        <PuchaseItems />,
+        <Users />
+    ];
 
     return (
         <>
@@ -49,8 +71,7 @@ const Dashboard = () => {
                 <Layout className="site-layout">
 
                     <Content style={{ margin: '0 16px' }}>
-
-
+                        {bodyContainer[activeIndex]}
                     </Content>
                     <Footer style={{ textAlign: 'center' }}>ERP System ©2022 Created by Bug Busters</Footer>
                 </Layout>
