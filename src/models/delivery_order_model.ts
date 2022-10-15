@@ -1,4 +1,4 @@
-export interface DeliveryOrder {
+export interface DeliveryOrderModel {
     _id: string,
     date: Date,
     transactionDate: Date,
