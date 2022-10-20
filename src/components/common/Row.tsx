@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
 
-const Row = styled.div`
+const CustomRow = styled.div`
   display:  flex;
   flex-direction: row;
   justify-content: space-between;
@@ -10,5 +10,5 @@ const Row = styled.div`
 `
 
 
-export default Row
+export default CustomRow
 

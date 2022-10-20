@@ -1,9 +1,7 @@
 export default interface User {
+    _id: string,
     email: string,
-    password: string,
-    displayName: string,
-    photoURL?: string,
-    token: string;
-    companyId: string;
-    role: string,
+    name: string,
+    photoUrl?: string,
+    companyId: string,
 }

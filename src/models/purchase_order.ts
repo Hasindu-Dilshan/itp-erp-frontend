@@ -1,17 +1,10 @@
 export interface PhurchaseOrder {
-    _id: string,
-    date: Date,
-    transactionDate: Date,
-    orderNumber: string,
-    referenceNumber: string,
-    transactionType: string,
-    purchaseOrder: string,
-    shippingAddress: string,
-    requestOrder: number;
-    BillAddress: string
-    status: number,
-    companyId: number,
-    createAt: string,
-    updateAt: string,
-    deleteAt: string
+    _id : string,
+    name: string;
+    description: string;
+    manufacturer: string;
+    supplier: string;
+    in_stock_amount: number;
+    unit_price: number;
+    type: string;
 }
