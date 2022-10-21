@@ -1,11 +1,11 @@
 export interface DeliveryOrderModel {
-      _id: string,
+      _id?: string,
    date: Date,
    transactionDate: Date,
    transactionType: string,
    coustomer: string,
    shippingAddress: string,
-   totalBill: string,
+   totalBill: number,
    status: number,
-   companyId: number,
+   companyId: string,
   }

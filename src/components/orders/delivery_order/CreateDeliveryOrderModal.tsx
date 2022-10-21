@@ -1,7 +1,9 @@
 import { MouseEvent, useState } from 'react'
-import { DatePicker, Form, Modal, Col, Row, Dropdown, Menu, Input } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
+import { DatePicker, Form, Modal, Col, Row, Input } from 'antd';
+import { DeliveryOrderModel } from "../../../models/delivery_order_model"
 import TextArea from 'antd/lib/input/TextArea';
+import DeliveryOrderService from '../../../services/delivery_order/delivery_order_service';
+
 
 interface Props {
    shouldOpen: boolean,
@@ -11,47 +13,55 @@ interface Props {
 }
 
 const CreateDeliveryOrderModal = ({ shouldOpen, handleOk, handleCancel, confirmLoading }: Props) => {
-   const [transactionType, setTransactionType] = useState("");
+   const [transactionDate, setTransactionDate] = useState("2022-10-12");
+   const [deliveryDate, setDeliveryDate] = useState("2022-10-15");
+   const [customersName, setCustomersName] = useState("");
+   const [address, setAddress] = useState("");
+   const [totalBill, setTotalBill] = useState(0)
 
-   const menu = (
-      <Menu
-         items={[
-            {
-               label: (
-                  <p onClick={() => setTransactionType("Card")}>Credit/Debit Card</p>
-               ),
-               key: '0',
-            },
-            {
-               label: (
-                  <p onClick={() => setTransactionType("Cash On Delivery")}>Cash On Delivery</p>
-               ),
-               key: '1',
-            },
 
-         ]}
-      />
-   );
+   const createDeliveryOrder = (e: MouseEvent<HTMLElement, globalThis.MouseEvent>) => {
+      const deliveryOrder: DeliveryOrderModel = ({
+         date: new Date(deliveryDate),
+         transactionDate: new Date(transactionDate),
+         transactionType: "asd",
+         coustomer: customersName,
+         shippingAddress: address,
+         companyId: "1",
+         totalBill: totalBill,
+         status: 0,
+      });
+
+      DeliveryOrderService.createDeliveryItem(deliveryOrder).then((val)=>{
+         console.log(val);
+
+      });
+
+      handleOk(e);
+   }
+
+
+
    return (
       <Modal
          title="Create Delivery Order"
          open={shouldOpen}
-         onOk={handleOk}
+         onOk={createDeliveryOrder}
          confirmLoading={confirmLoading}
          onCancel={handleCancel}
          width={1000}
       >
          <Form>
             <Row>
-               <Col span={8}>
+               <Col span={12}>
                   <Form.Item
                      name="transaction-date"
                      label="Transaction Date"
                   >
-                     <DatePicker />
+                     <DatePicker onChange={(val) => { }} />
                   </Form.Item>
                </Col>
-               <Col span={8} style={{ display: "flex", flexDirection: "column" }}>
+               <Col span={12} style={{ display: "flex", flexDirection: "column" }}>
                   <Form.Item
                      name="delivery-date"
                      label="Delivery Date"
@@ -59,36 +69,29 @@ const CreateDeliveryOrderModal = ({ shouldOpen, handleOk, handleCancel, confirmL
                      <DatePicker />
                   </Form.Item>
                </Col>
-               <Col span={8} style={{ display: "flex", flexDirection: "column" }}>
-                  <Form.Item
-                     name="transaction-type"
-                     label="Transaction Type"
-                  >
-                     <Dropdown overlay={menu}>
-                        <div onClick={e => e.preventDefault()}>
-                           {transactionType === "" ? <DownOutlined /> : transactionType}
-                        </div>
-                     </Dropdown>
-                  </Form.Item>
-               </Col>
+
             </Row>
             <Row>
-               <Col span={12}>
+               <Col span={24}>
                   <Form.Item
                      name="name"
                      label="Customers Name"
                   >
-                     <Input placeholder="Enter here"  />
+                     <Input placeholder="Enter here" onChange={(val) => { setCustomersName(val.target.value) }} />
                   </Form.Item>
                </Col>
-               <Col span={12}>
+
+            </Row>
+            <Row>
+               <Col span={24}>
                   <Form.Item
                      name="address"
                      label="Address"
                   >
-                     <TextArea placeholder='Enter Here' rows={6} />
+                     <TextArea placeholder='Enter Here' rows={6} onChange={(val) => { setAddress(val.target.value) }} />
                   </Form.Item>
                </Col>
+
             </Row>
          </Form>
       </Modal>
