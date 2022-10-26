@@ -1,18 +1,10 @@
-export interface Customer {
+export interface CustomeModel {
     _id: string,
     date: Date,
-    referenceNumber: string,
-    title: string,
-    nic: number,
-    mobile: number,
+    name: string,
+    nic: string,
+    mobile: string,
     email: string,
-    customer: string,
-    customerType: string,
-    salesPerson: number,
     address: string,
-    status: number,
     companyId: number,
-    createAt: string,
-    updateAt: string,
-    deleteAt: string
 }

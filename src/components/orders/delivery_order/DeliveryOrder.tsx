@@ -8,6 +8,9 @@ import WrapperContainer from '../../common/WrapperContainer'
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { Button, Tooltip } from 'antd';
 import CreateDeliveryOrderModal from './CreateDeliveryOrderModal'
+import axios from 'axios'
+import baseUrl from '../../../config'
+import companyId from '../../../config'
 
 const { Title } = Typography;
 
@@ -97,6 +100,12 @@ const DeliveryOrder = () => {
   };
 
 
+  useEffect(() => {
+    // axios.get(`${baseUrl}/delivery-order/${companyId}/0/1`).then((val => {
+
+    // })).catch(err => console.log(`get delivery orders failed ${err}`))
+  }, []);
+
   return (
     <WrapperContainer>
       <CustomRow>
@@ -106,11 +115,11 @@ const DeliveryOrder = () => {
         </Tooltip>
       </CustomRow>
       <Table columns={columns} className="table" dataSource={deliveryOrders} />
-      <CreateDeliveryOrderModal  
-        shouldOpen = {open}
-        confirmLoading = {confirmLoading}
-        handleCancel = {handleCancel}
-        handleOk = {handleOk}
+      <CreateDeliveryOrderModal
+        shouldOpen={open}
+        confirmLoading={confirmLoading}
+        handleCancel={handleCancel}
+        handleOk={handleOk}
       />
     </WrapperContainer>
   )
