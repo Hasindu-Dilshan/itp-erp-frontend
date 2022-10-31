@@ -6,81 +6,20 @@ import CustomRow from '../../common/Row'
 import { Typography } from 'antd';
 import WrapperContainer from '../../common/WrapperContainer'
 import { PlusCircleOutlined } from '@ant-design/icons';
-import { Button, Tooltip } from 'antd';
+import { Button, Tooltip, Space } from 'antd';
 import CreateDeliveryOrderModal from './CreateDeliveryOrderModal'
-import axios from 'axios'
-import baseUrl from '../../../config'
-import companyId from '../../../config'
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import DeleteModal from '../../common/DeleteModal'
 
 const { Title } = Typography;
-
-const columns: ColumnsType<DeliveryOrderModel> = [
-  {
-    title: "Order ID",
-    dataIndex: "id",
-    key: "id",
-  },
-  {
-    title: "Placed Date",
-    dataIndex: "placed-date",
-    key: "placed-date",
-  },
-  {
-    title: "Transaction Date",
-    dataIndex: "transaction-date",
-    key: "transaction-date",
-  },
-  {
-    title: "Transaction Type",
-    dataIndex: "transaction-type",
-    key: "transaction-type",
-  },
-  {
-    title: "Order Source",
-    dataIndex: "order-source",
-    key: "order-source",
-  },
-  {
-    title: "Delivery Type",
-    dataIndex: "delivery-type",
-    key: "delivery-type",
-  },
-  {
-    title: "Vehicle Number",
-    dataIndex: "vehicle-number",
-    key: "vehicle-number",
-  },
-  {
-    title: "Customer Name",
-    dataIndex: "customer-name",
-    key: "customer-name",
-  },
-  {
-    title: "Shipping Address",
-    dataIndex: "shipping-address",
-    key: "shipping-address",
-  },
-  {
-    title: "Total Bill",
-    dataIndex: "total-bill",
-    key: "total-bill",
-  },
-  {
-    title: "Order Status",
-    dataIndex: "status",
-    key: "status",
-  },
-]
 
 
 const DeliveryOrder = () => {
   const [open, setOpen] = useState(false);
 
   const [deliveryOrders, setDeliveryOrders] = useState<DeliveryOrderModel[]>([])
-  useEffect(() => {
-    setDeliveryOrders(DeliveryOrderService.getDeliveryItems(0, 10));
-  }, [])
-
+  const [selectedOrder, setSelectedOrder] = useState<DeliveryOrderModel>();
+  const [deleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [confirmLoading, setConfirmLoading] = useState(false);
   const showModal = () => {
     setOpen(true);
@@ -99,11 +38,76 @@ const DeliveryOrder = () => {
     setOpen(false);
   };
 
+  const columns: ColumnsType<DeliveryOrderModel> = [
+    {
+      title: "Order ID",
+      dataIndex: "_id",
+      key: "id",
+    },
+    {
+      title: "Placed Date",
+      dataIndex: "date",
+      key: "placed-date",
+    },
+    {
+      title: "Transaction Date",
+      key: "transactionDate",
+      dataIndex: "transactionDate"
+
+    },
+    {
+      title: "Customer Name",
+      dataIndex: "coustomer",
+      key: "customer",
+    },
+    {
+      title: "Shipping Address",
+      dataIndex: "shippingAddress",
+      key: "shipping-address",
+    },
+    {
+      title: "Total Bill",
+      dataIndex: "totalBill",
+      key: "total-bill",
+    },
+    {
+      title: "Order Status",
+      key: "status",
+      render: (_, record: DeliveryOrderModel) => {
+        return <p>{record.status === 0 ? "Not Completed" : "Completed"}</p>
+      }
+    },
+    {
+      title: "Order Status",
+      key: "status",
+      render: (_, record: DeliveryOrderModel) => {
+        return <Space size="middle">
+          <Button icon={<EditOutlined />} onClick={() => { setSelectedOrder(record); }}></Button>
+          <Button icon={<DeleteOutlined />} onClick={() => { setSelectedOrder(record); setIsDeleteModalOpen(true); }}></Button>
+        </Space>
+      }
+    },
+  ]
+
+
+  const deleteDeliveryOrder = async () => {
+    await DeliveryOrderService.deleteDeliveryItem(selectedOrder?._id!);
+    refresher()
+    setIsDeleteModalOpen(false)
+  }
+
+  const refresher = async () => {
+    await DeliveryOrderService.getDeliveryItems(0, 10)
+      .then((val) => {
+        setDeliveryOrders([...val])
+      });
+  }
 
   useEffect(() => {
-    // axios.get(`${baseUrl}/delivery-order/${companyId}/0/1`).then((val => {
-
-    // })).catch(err => console.log(`get delivery orders failed ${err}`))
+    DeliveryOrderService.getDeliveryItems(0, 10)
+      .then((val) => {
+        setDeliveryOrders([...val])
+      });
   }, []);
 
   return (
@@ -121,6 +125,7 @@ const DeliveryOrder = () => {
         handleCancel={handleCancel}
         handleOk={handleOk}
       />
+      <DeleteModal isModalOpen={deleteModalOpen} handleOk={deleteDeliveryOrder} handleCancel={() => { console.log("cale"); setIsDeleteModalOpen(false) }} text={"Delete delivery order"} />
     </WrapperContainer>
   )
 }

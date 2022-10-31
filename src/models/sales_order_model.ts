@@ -1,4 +1,4 @@
-export interface SalesOder {
+export interface SalesOderModel {
     _id: string;
     date: Date;
     transactionDate: Date;
@@ -8,4 +8,6 @@ export interface SalesOder {
     totalBill: number;
     status: number;
     companyId: string;
+    itemId : string,
+    itemName : string,
 }

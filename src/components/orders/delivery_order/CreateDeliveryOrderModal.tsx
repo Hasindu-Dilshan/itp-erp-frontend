@@ -11,7 +11,8 @@ interface Props {
    shouldOpen: boolean,
    confirmLoading: boolean,
    handleOk: ((e: MouseEvent<HTMLElement, globalThis.MouseEvent>) => void),
-   handleCancel: ((e: MouseEvent<HTMLElement, globalThis.MouseEvent>) => void)
+   handleCancel: ((e: MouseEvent<HTMLElement, globalThis.MouseEvent>) => void),
+   deliveryOrder?: DeliveryOrderModel
 }
 
 const columns: ColumnsType<ItemModel> = [
@@ -43,7 +44,7 @@ const columns: ColumnsType<ItemModel> = [
 
 
 
-const CreateDeliveryOrderModal = ({ shouldOpen, handleOk, handleCancel, confirmLoading }: Props) => {
+const CreateDeliveryOrderModal = ({ shouldOpen, handleOk, handleCancel, confirmLoading, deliveryOrder }: Props) => {
    const [transactionDate, setTransactionDate] = useState("2022-10-12");
    const [deliveryDate, setDeliveryDate] = useState("2022-10-15");
    const [customersName, setCustomersName] = useState("");
@@ -68,9 +69,9 @@ const CreateDeliveryOrderModal = ({ shouldOpen, handleOk, handleCancel, confirmL
          totalBill: totalBill,
          status: 0,
       });
-  
+
       DeliveryOrderService.createDeliveryItem(deliveryOrder).then((val) => {
-        
+
 
       });
 
@@ -125,7 +126,15 @@ const CreateDeliveryOrderModal = ({ shouldOpen, handleOk, handleCancel, confirmL
       />
    );
 
-   useEffect(() => { console.log("called") }, [selectedItems])
+   useEffect(() => {
+      if (deliveryOrder) {
+         setTransactionDate(deliveryOrder.transactionDate.toLocaleDateString());
+         setDeliveryDate(deliveryOrder.date.toLocaleDateString());
+         setTotalBill(deliveryOrder.totalBill);
+         setCustomersName(deliveryOrder.coustomer);
+         setAddress(deliveryOrder.shippingAddress);
+      }
+   }, [selectedItems, deliveryOrder])
 
    return (
       <Modal
@@ -136,7 +145,9 @@ const CreateDeliveryOrderModal = ({ shouldOpen, handleOk, handleCancel, confirmL
          onCancel={handleCancel}
          width={1000}
       >
-         <Form>
+         <Form
+            layout="vertical"
+         >
             <Row>
                <Col span={12}>
                   <Form.Item
