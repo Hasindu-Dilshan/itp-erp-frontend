@@ -6,7 +6,6 @@ import numberValidator from '../../common/number_validator'
 import stringValidator from '../../common/validation_helper'
 
 
-
 interface Props {
    isOpen: boolean,
    handleOk: () => void,
@@ -38,7 +37,7 @@ const items: ItemModel[] = [
    },
 ]
 
-const AddSalesOrderModal = ({ isOpen, handleCancel, handleOk }: Props) => {
+const AddSalesOrderModal = ({ isOpen, handleCancel, handleOk,order }: Props) => {
 
    const [date, setDate] = useState<string>("");
    const [transactionDate, setTransactionDate] = useState<string>("");
@@ -48,6 +47,23 @@ const AddSalesOrderModal = ({ isOpen, handleCancel, handleOk }: Props) => {
    const [quantity, setQuantity] = useState<number>(0);
    const [totalBill, setTotalBill] = useState<number>(0);
    const [selectedItem, setSelectedItem] = useState<ItemModel>();
+
+
+   const createOrder = () => {
+      const order: SalesOderModel = {
+         date: date,
+         transactionDate : transactionDate,
+         transactionType : "tra",
+         coustomer: customerName,
+         shippingAddress :address,
+         totalBill,
+         status: 0,
+         companyId: "1",
+         itemId: selectedItem!._id,
+         itemName: itemName,
+      }
+      
+   }
 
 
    return (
@@ -175,7 +191,7 @@ const AddSalesOrderModal = ({ isOpen, handleCancel, handleOk }: Props) => {
                         onChange={(val) => {
                            if (val.target.value) {
                               console.log(val.target.value)
-                              setQuantity(parseInt(""+ val.target.value));
+                              setQuantity(parseInt("" + val.target.value));
                               if (selectedItem && quantity !== 0) {
                                  console.log(quantity)
                                  setTotalBill(selectedItem.price * quantity);

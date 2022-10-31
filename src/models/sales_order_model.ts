@@ -1,7 +1,7 @@
 export interface SalesOderModel {
-    _id: string;
-    date: Date;
-    transactionDate: Date;
+    _id?: string;
+    date: string;
+    transactionDate: string;
     transactionType: string;
     coustomer: string;
     shippingAddress: string;

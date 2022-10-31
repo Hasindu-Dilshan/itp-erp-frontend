@@ -38,7 +38,7 @@ const Dashboard = () => {
         getItem('Sales Order', 3),
         getItem('Purchase Order', 4),
         getItem('Purchase Request', 5),
-        getItem('Purchase Items', 6),
+        getItem('Items', 6),
         getItem('Users', 7,),
     ];
 
