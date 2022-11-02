@@ -1,7 +1,8 @@
 import { Form, Modal, Row, Button, DatePicker, Input, Select, Col } from 'antd'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ItemModel } from '../../../models/item_model'
 import { SalesOderModel } from '../../../models/sales_order_model'
+import SalesOrderService from '../../../services/sales_order_service'
 import numberValidator from '../../common/number_validator'
 import stringValidator from '../../common/validation_helper'
 
@@ -37,7 +38,7 @@ const items: ItemModel[] = [
    },
 ]
 
-const AddSalesOrderModal = ({ isOpen, handleCancel, handleOk,order }: Props) => {
+const AddSalesOrderModal = ({ isOpen, handleCancel, handleOk, order }: Props) => {
 
    const [date, setDate] = useState<string>("");
    const [transactionDate, setTransactionDate] = useState<string>("");
@@ -49,28 +50,42 @@ const AddSalesOrderModal = ({ isOpen, handleCancel, handleOk,order }: Props) => 
    const [selectedItem, setSelectedItem] = useState<ItemModel>();
 
 
-   const createOrder = () => {
+   const createOrder = async () => {
       const order: SalesOderModel = {
          date: date,
-         transactionDate : transactionDate,
-         transactionType : "tra",
+         transactionDate: transactionDate,
+         transactionType: "tra",
          coustomer: customerName,
-         shippingAddress :address,
+         shippingAddress: address,
          totalBill,
          status: 0,
          companyId: "1",
          itemId: selectedItem!._id,
          itemName: itemName,
       }
-      
+      await SalesOrderService.createSalesItem(order)
+         .then((val) => { })
+         .catch(err => console.log(`creae sales order failed ${err}`))
+
+      handleOk();
    }
+
+
+   useEffect(() => {
+      if (order) {
+         setCustomerName(order.coustomer);
+         setItemName(order.itemName);
+         setTotalBill(order.totalBill);
+         setShippingAddress(order.shippingAddress);
+      }
+   }, [order])
 
 
    return (
       <Modal
          open={isOpen}
          onCancel={handleCancel}
-         onOk={handleOk}
+         onOk={createOrder}
          width={1000}
          title="Add sales order"
          footer={null}
@@ -126,6 +141,7 @@ const AddSalesOrderModal = ({ isOpen, handleCancel, handleOk,order }: Props) => 
                      rules={stringValidator("Enter customer name")}
                   >
                      <Input placeholder='Enter here'
+                        value={customerName}
                         onChange={(val) => {
                            if (val) {
                               setCustomerName(val.target.value);
@@ -208,7 +224,9 @@ const AddSalesOrderModal = ({ isOpen, handleCancel, handleOk,order }: Props) => 
                </Col>
                <Col span={7} />
                <Col span={5}>
-                  <Button type='primary' htmlType='submit' style={{ width: "100%" }}>Create Order</Button>
+                  <Button type='primary' htmlType='submit' style={{ width: "100%" }}
+                     onClick={() => { createOrder(); }}
+                  >Create Order</Button>
                </Col>
             </Row>
          </Form>

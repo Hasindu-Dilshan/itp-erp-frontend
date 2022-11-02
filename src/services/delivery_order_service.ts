@@ -1,7 +1,7 @@
 
-import http, { post, put } from "../../http-common"
-import { DeliveryOrderModel } from "../../models/delivery_order_model"
-import companyId from "../../config"
+import http, { post, put } from "../http-common"
+import { DeliveryOrderModel } from "../models/delivery_order_model"
+import companyId from "../config"
 const url = "http://127.0.0.1:8080";
 
 
@@ -33,7 +33,7 @@ const updateDeliverItem = (id: number, deliveryOrder: DeliveryOrderModel) => {
 }
 
 const createDeliveryItem = async (deliveryOrder: DeliveryOrderModel) => {
- 
+
 
    post(url + "/delivery-order/create-delivery-order",
       {
