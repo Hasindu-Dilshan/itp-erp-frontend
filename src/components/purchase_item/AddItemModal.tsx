@@ -3,6 +3,8 @@ import React, { useState } from 'react'
 import { ItemModel } from '../../models/item_model'
 import numberValidator from '../common/number_validator'
 import stringValidator from '../common/validation_helper'
+import LogRocket from 'logrocket';
+LogRocket.init('yjover/erp');
 
 interface Props {
    isOpen: boolean,
