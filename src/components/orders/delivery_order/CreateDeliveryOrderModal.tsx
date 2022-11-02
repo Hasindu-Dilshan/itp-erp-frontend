@@ -1,7 +1,7 @@
 import { MouseEvent, useEffect, useState } from 'react'
 import { DatePicker, Form, Modal, Col, Row, Input, Button, Table, Dropdown, Menu, Space, } from 'antd';
 import { DeliveryOrderModel } from "../../../models/delivery_order_model"
-import TextArea from 'antd/lib/input/TextArea';
+
 import DeliveryOrderService from '../../../services/delivery_order/delivery_order_service';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { ColumnsType } from 'antd/lib/table'
@@ -47,8 +47,8 @@ const columns: ColumnsType<ItemModel> = [
 const CreateDeliveryOrderModal = ({ shouldOpen, handleOk, handleCancel, confirmLoading, deliveryOrder }: Props) => {
    const [transactionDate, setTransactionDate] = useState("2022-10-12");
    const [deliveryDate, setDeliveryDate] = useState("2022-10-15");
-   const [customersName, setCustomersName] = useState("");
-   const [address, setAddress] = useState("");
+   const [customersName, setCustomersName] = useState<string>("");
+   const [address, setAddress] = useState<string>("");
    const [isOpen, setIsOpen] = useState(false)
    const [selectedItems, setSelectedItems] = useState<ItemModel[]>([])
    const [selectedIemName, setSelectedItemName] = useState("")
@@ -128,11 +128,14 @@ const CreateDeliveryOrderModal = ({ shouldOpen, handleOk, handleCancel, confirmL
 
    useEffect(() => {
       if (deliveryOrder) {
+         console.log("called");
          setTransactionDate(deliveryOrder.transactionDate.toLocaleDateString());
          setDeliveryDate(deliveryOrder.date.toLocaleDateString());
          setTotalBill(deliveryOrder.totalBill);
          setCustomersName(deliveryOrder.coustomer);
          setAddress(deliveryOrder.shippingAddress);
+
+         
       }
    }, [selectedItems, deliveryOrder])
 
@@ -147,6 +150,7 @@ const CreateDeliveryOrderModal = ({ shouldOpen, handleOk, handleCancel, confirmL
       >
          <Form
             layout="vertical"
+           
          >
             <Row>
                <Col span={12}>
@@ -192,7 +196,7 @@ const CreateDeliveryOrderModal = ({ shouldOpen, handleOk, handleCancel, confirmL
                      name="name"
                      label="Customers Name"
                   >
-                     <Input placeholder="Enter here" onChange={(val) => { setCustomersName(val.target.value) }} />
+                     <Input onChange={(val) => { setCustomersName(val.target.value) }} value="{customersName}" />
                   </Form.Item>
                </Col>
 
@@ -203,7 +207,7 @@ const CreateDeliveryOrderModal = ({ shouldOpen, handleOk, handleCancel, confirmL
                      name="address"
                      label="Address"
                   >
-                     <TextArea placeholder='Enter Here' rows={6} onChange={(val) => { setAddress(val.target.value) }} />
+                     <Input.TextArea value={address} rows={3} onChange={(val) => { setAddress(val.target.value) }} />
                   </Form.Item>
                </Col>
 

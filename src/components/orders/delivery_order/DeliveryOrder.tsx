@@ -18,12 +18,17 @@ const DeliveryOrder = () => {
   const [open, setOpen] = useState(false);
 
   const [deliveryOrders, setDeliveryOrders] = useState<DeliveryOrderModel[]>([])
-  const [selectedOrder, setSelectedOrder] = useState<DeliveryOrderModel>();
+  const [selectedOrder, setSelectedOrder] = useState<any>();
   const [deleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const showModal = () => {
-    setOpen(true);
-  };
+  const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
+
+
+
+  const openCloseEditModal = async () => {
+    await refresher();
+    setIsEditModalOpen(!isEditModalOpen);
+  }
 
   const handleOk = () => {
     setConfirmLoading(true);
@@ -46,13 +51,18 @@ const DeliveryOrder = () => {
     },
     {
       title: "Placed Date",
-      dataIndex: "date",
       key: "placed-date",
+      render: (_, record: DeliveryOrderModel) => {
+        return <div>{record.date.toString().split("T")[0]}</div>
+      }
+
     },
     {
       title: "Transaction Date",
       key: "transactionDate",
-      dataIndex: "transactionDate"
+      render: (_, record: DeliveryOrderModel) => {
+        return <div>{record.transactionDate.toString().split("T")[0]}</div>
+      }
 
     },
     {
@@ -82,8 +92,23 @@ const DeliveryOrder = () => {
       key: "status",
       render: (_, record: DeliveryOrderModel) => {
         return <Space size="middle">
-          <Button icon={<EditOutlined />} onClick={() => { setSelectedOrder(record); }}></Button>
-          <Button icon={<DeleteOutlined />} onClick={() => { setSelectedOrder(record); setIsDeleteModalOpen(true); }}></Button>
+          <Button icon={<EditOutlined />} onClick={() => {
+            const d: DeliveryOrderModel = {
+              _id: record._id,
+              date: new Date(record.date),
+              transactionDate: new Date(record.transactionDate),
+              transactionType: record.transactionType,
+              coustomer: record.coustomer,
+              shippingAddress: record.shippingAddress,
+              status: record.status,
+              totalBill: record.totalBill,
+              companyId: record.companyId,
+            }
+         
+            setSelectedOrder(d)
+          setIsEditModalOpen(true)
+          }}></Button>
+          <Button icon={<DeleteOutlined />} onClick={() => { /*setIsDeleteModalOpen(true)*/ }}></Button>
         </Space>
       }
     },
@@ -103,6 +128,7 @@ const DeliveryOrder = () => {
       });
   }
 
+
   useEffect(() => {
     DeliveryOrderService.getDeliveryItems(0, 10)
       .then((val) => {
@@ -115,7 +141,7 @@ const DeliveryOrder = () => {
       <CustomRow>
         <Title level={3}>Delivery Order</Title>
         <Tooltip title="Add Delivery Order">
-          <Button type="primary" shape="circle" icon={<PlusCircleOutlined />} onClick={showModal} />
+          <Button type="primary" shape="circle" icon={<PlusCircleOutlined />} onClick={()=>{setOpen(true)}} />
         </Tooltip>
       </CustomRow>
       <Table columns={columns} className="table" dataSource={deliveryOrders} />
@@ -123,7 +149,13 @@ const DeliveryOrder = () => {
         shouldOpen={open}
         confirmLoading={confirmLoading}
         handleCancel={handleCancel}
-        handleOk={handleOk}
+        handleOk={handleOk}/>
+      <CreateDeliveryOrderModal
+        shouldOpen={isEditModalOpen}
+        confirmLoading={false}
+        handleCancel={openCloseEditModal}
+        handleOk={openCloseEditModal}
+        deliveryOrder={selectedOrder}
       />
       <DeleteModal isModalOpen={deleteModalOpen} handleOk={deleteDeliveryOrder} handleCancel={() => { console.log("cale"); setIsDeleteModalOpen(false) }} text={"Delete delivery order"} />
     </WrapperContainer>
