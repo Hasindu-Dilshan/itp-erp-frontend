@@ -44,30 +44,26 @@ const PurchaseOrder = () => {
       key: "id"
     },
     {
-      title: "Name",
-      dataIndex: "name",
-      key: "name"
+      title: "Purchase Date",
+      dataIndex: "purchaseOrderDate",
+      key: "purchase-date"
     },
     {
-      title: "NIC",
-      dataIndex: "nic",
+      title: "Supplier Name",
+      dataIndex: "suppierName",
       key: "nic"
     },
     {
-      title: "Mobile Numer",
-      dataIndex: "mobile",
-      key: "mobile-number"
+      title: "Store",
+      dataIndex: "store",
+      key: "store"
     },
     {
-      title: "Email",
-      dataIndex: "email",
-      key: "email"
+      title: "Net Amount",
+      dataIndex: "netAmount",
+      key: "netAmount"
     },
-    {
-      title: "Address",
-      dataIndex: "address",
-      key: "address"
-    },
+
     {
       title: "Actions",
       key: "status",
