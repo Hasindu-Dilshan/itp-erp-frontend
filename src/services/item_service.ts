@@ -6,7 +6,7 @@ const url = "http://127.0.0.1:8090";
 
 
 const getDeliveryItems = async (offset: number, pagination: number): Promise<ItemModel[]> => {
-   return await http.get(`item-controller/${companyId.companyId}/${pagination}/${offset}`).then((result) => {
+   return await http.get(`item-controller/1/${pagination}/${offset}`).then((result) => {
       return result.data.orders;
    }).catch(err => {
       console.log(`get items failed ${err}`);
