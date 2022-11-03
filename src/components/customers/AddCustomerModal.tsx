@@ -1,8 +1,9 @@
 import { Button, Col, Form, Input, Row } from 'antd'
 import FormItem from 'antd/es/form/FormItem'
 import Modal from 'antd/lib/modal/Modal'
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
 import { CustomeModel } from '../../models/customer_model'
+import CustomerService from '../../services/customer_service'
 import stringValidator from '../common/validation_helper'
 
 interface Props {
@@ -20,6 +21,32 @@ const AddCustomerModal = ({ isOpen, handleCancel, handleOk, customer }: Props) =
    const [mobile, setMobile] = useState("")
    const [email, setEmail] = useState("")
    const [address, setAddress] = useState("")
+
+   const createCustomer = async () => {
+      const customer: CustomeModel = {
+         name: name,
+         date: new Date(),
+         nic,
+         mobile,
+         email,
+         address,
+         companyId: "1"
+      }
+
+      await CustomerService.createCustomer(customer).catch(errr => console.log(`create customer failed ${errr}`))
+      handleOk();
+   }
+
+   useEffect(() => {
+      if (customer) {
+         setName(customer.name);
+         setAddress(customer.address);
+         setNic(customer.nic);
+         setMobile(customer.mobile);
+         
+      }
+   }, [customer])
+
 
    return (
       <Modal
@@ -116,7 +143,7 @@ const AddCustomerModal = ({ isOpen, handleCancel, handleOk, customer }: Props) =
                </Col>
                <Col span={7} />
                <Col span={5}>
-                  <Button type='primary' htmlType='submit' style={{ width: "100%" }}>Add Customer</Button>
+                  <Button type='primary' htmlType='submit' onClick={() => { createCustomer() }} style={{ width: "100%" }}>Add Customer</Button>
                </Col>
             </Row>
          </Form>
