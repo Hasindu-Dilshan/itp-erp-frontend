@@ -1,7 +1,7 @@
 import Table, { ColumnsType } from 'antd/lib/table'
 import React, { useEffect, useState } from 'react'
 import { DeliveryOrderModel } from '../../../models/delivery_order_model'
-import DeliveryOrderService from '../../../services/delivery_order_service'
+import purchaseOrderservice from '../../../services/delivery_order_service'
 import CustomRow from '../../common/Row'
 import { Typography } from 'antd';
 import WrapperContainer from '../../common/WrapperContainer'
@@ -17,7 +17,7 @@ const { Title } = Typography;
 const DeliveryOrder = () => {
   const [open, setOpen] = useState(false);
 
-  const [deliveryOrders, setDeliveryOrders] = useState<DeliveryOrderModel[]>([])
+  const [purchaseOrders, setpurchaseOrders] = useState<DeliveryOrderModel[]>([])
   const [selectedOrder, setSelectedOrder] = useState<any>();
   const [deleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [confirmLoading, setConfirmLoading] = useState(false);
@@ -113,23 +113,23 @@ const DeliveryOrder = () => {
 
 
   const deleteDeliveryOrder = async () => {
-    await DeliveryOrderService.deleteDeliveryItem(selectedOrder?._id!);
+    await purchaseOrderservice.deleteDeliveryItem(selectedOrder?._id!);
     await refresher()
     setIsDeleteModalOpen(false)
   }
 
   const refresher = async () => {
-    await DeliveryOrderService.getDeliveryItems(0, 10)
+    await purchaseOrderservice.getDeliveryItems(0, 10)
       .then((val) => {
-        setDeliveryOrders([...val])
+        setpurchaseOrders([...val])
       });
   }
 
 
   useEffect(() => {
-    DeliveryOrderService.getDeliveryItems(0, 10)
+    purchaseOrderservice.getDeliveryItems(0, 10)
       .then((val) => {
-        setDeliveryOrders([...val])
+        setpurchaseOrders([...val])
       });
   }, []);
 
@@ -141,7 +141,7 @@ const DeliveryOrder = () => {
           <Button type="primary" shape="circle" icon={<PlusCircleOutlined />} onClick={() => { setOpen(true) }} />
         </Tooltip>
       </CustomRow>
-      <Table columns={columns} className="table" dataSource={deliveryOrders} />
+      <Table columns={columns} className="table" dataSource={purchaseOrders} />
       <CreateDeliveryOrderModal
         shouldOpen={open}
         confirmLoading={confirmLoading}
