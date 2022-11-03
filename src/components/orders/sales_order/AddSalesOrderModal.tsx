@@ -19,22 +19,28 @@ const items: ItemModel[] = [
       _id: "1",
       name: "Casset",
       price: 150,
-      status: true,
-      manufacturer: "Abans"
+      inStock: true,
+      manufacturedBy: "Abans",
+      supplier: "KM Karunaranthna",
+      companyId: "1",
    },
    {
       _id: "3",
       name: "Radio",
       price: 150,
-      status: true,
-      manufacturer: "Abans"
+      inStock: true,
+      manufacturedBy: "Abans",
+      supplier: "KM Karunaranthna",
+      companyId: "1"
    },
    {
       _id: "2",
       name: "Tv",
       price: 150,
-      status: true,
-      manufacturer: "Abans"
+      inStock: true,
+      manufacturedBy: "Aban",
+      supplier: "KM Karunaranthna",
+      companyId: "1",
    },
 ]
 
@@ -51,21 +57,23 @@ const AddSalesOrderModal = ({ isOpen, handleCancel, handleOk, order }: Props) =>
 
 
    const createOrder = async () => {
-      const order: SalesOderModel = {
-         date: date,
-         transactionDate: transactionDate,
-         transactionType: "tra",
-         coustomer: customerName,
-         shippingAddress: address,
-         totalBill,
-         status: 0,
-         companyId: "1",
-         itemId: selectedItem!._id,
-         itemName: itemName,
+      if (selectedItem) {
+         const order: SalesOderModel = {
+            date: date,
+            transactionDate: transactionDate,
+            transactionType: "tra",
+            coustomer: customerName,
+            shippingAddress: address,
+            totalBill,
+            status: 1.,
+            companyId: "1",
+            itemId: selectedItem._id,
+            itemName: itemName,
+         }
+         await SalesOrderService.createSalesItem(order)
+            .then((val) => { })
+            .catch(err => console.log(`creae sales order failed ${err}`))
       }
-      await SalesOrderService.createSalesItem(order)
-         .then((val) => { })
-         .catch(err => console.log(`creae sales order failed ${err}`))
 
       handleOk();
    }
