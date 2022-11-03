@@ -7,12 +7,12 @@ import { PlusCircleOutlined } from '@ant-design/icons';
 import { ColumnsType } from 'antd/lib/table'
 import { ItemModel } from '../../purchase_request/item_model';
 import { DownOutlined } from '@ant-design/icons';
+import { PhurchaseOrderModel } from '../../../models/purchase_order';
 interface Props {
    shouldOpen: boolean,
-   confirmLoading: boolean,
    handleOk: () => void,
    handleCancel: ((e: MouseEvent<HTMLElement, globalThis.MouseEvent>) => void),
-   deliveryOrder?: DeliveryOrderModel
+   order?: PhurchaseOrderModel
 }
 
 const columns: ColumnsType<ItemModel> = [
@@ -39,12 +39,7 @@ const columns: ColumnsType<ItemModel> = [
 
 
 ]
-
-
-
-
-
-const CreateDeliveryOrderModal = ({ shouldOpen, handleOk, handleCancel, confirmLoading, deliveryOrder }: Props) => {
+const AddPurchaseOrder = ({ shouldOpen, handleOk, handleCancel, order }: Props) => {
    const [transactionDate, setTransactionDate] = useState("2022-10-12");
    const [deliveryDate, setDeliveryDate] = useState("2022-10-15");
    const [customersName, setCustomersName] = useState<string>("");
@@ -59,7 +54,7 @@ const CreateDeliveryOrderModal = ({ shouldOpen, handleOk, handleCancel, confirmL
    const createDeliveryOrder = (e: MouseEvent<HTMLElement, globalThis.MouseEvent>) => {
 
 
-      const deliveryOrder: DeliveryOrderModel = ({
+      const order: DeliveryOrderModel = ({
          date: new Date(deliveryDate),
          transactionDate: new Date(transactionDate),
          transactionType: "asd",
@@ -70,7 +65,7 @@ const CreateDeliveryOrderModal = ({ shouldOpen, handleOk, handleCancel, confirmL
          status: 0,
       });
 
-      DeliveryOrderService.createDeliveryItem(deliveryOrder).then((val) => {
+      DeliveryOrderService.createDeliveryItem(order).then((val) => {
 
 
       }).catch(err=>console.log(`create delivery order failed ${err}`));
@@ -129,17 +124,17 @@ const CreateDeliveryOrderModal = ({ shouldOpen, handleOk, handleCancel, confirmL
    );
 
    useEffect(() => {
-      if (deliveryOrder) {
-         console.log("called");
-         setTransactionDate(deliveryOrder.transactionDate.toLocaleDateString());
-         setDeliveryDate(deliveryOrder.date.toLocaleDateString());
-         setTotalBill(deliveryOrder.totalBill);
-         setCustomersName(deliveryOrder.coustomer);
-         setAddress(deliveryOrder.shippingAddress);
+      if (order) {
+         // console.log("called");
+         // setTransactionDate(order.transactionDate.toLocaleDateString());
+         // setDeliveryDate(order.date.toLocaleDateString());
+         // setTotalBill(order.totalBill);
+         // setCustomersName(order.coustomer);
+         // setAddress(order.shippingAddress);
 
 
       }
-   }, [selectedItems, deliveryOrder])
+   }, [selectedItems, order])
 
    return (
       <Modal
@@ -258,4 +253,4 @@ const CreateDeliveryOrderModal = ({ shouldOpen, handleOk, handleCancel, confirmL
    )
 }
 
-export default CreateDeliveryOrderModal
+export default AddPurchaseOrder

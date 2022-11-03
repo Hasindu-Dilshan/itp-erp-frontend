@@ -2,12 +2,12 @@
 import http, { post, put } from "../http-common"
 import { ItemModel } from "../models/item_model"
 import companyId from "../config"
-const url = "http://127.0.0.1:8080";
+const url = "http://127.0.0.1:8090";
 
 
 const getDeliveryItems = async (offset: number, pagination: number): Promise<ItemModel[]> => {
    return await http.get(`item-controller/${companyId.companyId}/${pagination}/${offset}`).then((result) => {
-      return result.data.orders;
+      return result.data.items;
    }).catch(err => {
       console.log(`get items failed ${err}`);
       return [];
@@ -49,6 +49,7 @@ const createDeliveryItem = async (item: ItemModel) => {
 }
 
 const deleteDeliveryItem = async (id: string) => {
+   console.log("called")
    await http.delete(`item-controller/${id}`).then(result => result.data);
 }
 

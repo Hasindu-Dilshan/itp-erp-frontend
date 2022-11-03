@@ -1,162 +1,131 @@
-import Table, { ColumnsType } from 'antd/lib/table'
 import React, { useEffect, useState } from 'react'
-import { DeliveryOrderModel } from '../../../models/delivery_order_model'
-import purchaseOrderservice from '../../../services/delivery_order_service'
-import CustomRow from '../../common/Row'
-import { Typography } from 'antd';
-import WrapperContainer from '../../common/WrapperContainer'
-import { PlusCircleOutlined } from '@ant-design/icons';
-import { Button, Tooltip, Space } from 'antd';
-import CreateDeliveryOrderModal from './CreatePurchaseOrder'
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import DeleteModal from '../../common/DeleteModal'
 
+
+import { PlusCircleOutlined } from '@ant-design/icons';
+import CustomRow from '../../common/Row';
+import WrapperContainer from '../../common/WrapperContainer'
+import { Button, Space, Tooltip } from 'antd'
+import { Typography } from 'antd';
+import Table, { ColumnsType } from 'antd/lib/table';
+import { PhurchaseOrderModel } from '../../../models/purchase_order';
+
+import PurchaseOrderService from '../../../services/purchase_service';
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import AddPurchaseOrder from './AddPurchaseOrder';
 const { Title } = Typography;
 
 
-const DeliveryOrder = () => {
-  const [open, setOpen] = useState(false);
-
-  const [purchaseOrders, setpurchaseOrders] = useState<DeliveryOrderModel[]>([])
-  const [selectedOrder, setSelectedOrder] = useState<any>();
-  const [deleteModalOpen, setIsDeleteModalOpen] = useState(false)
-  const [confirmLoading, setConfirmLoading] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
 
 
+const PurchaseOrder = () => {
+  const [purchaseOrders, setPurchaseOrders] = useState<PhurchaseOrderModel[]>([]);
+  const [selectedPurchaseOrder, setSelectedPurchaseOrder] = useState<PhurchaseOrderModel>();
+  const [isEditModalOpen, setIsEditaModalOpen] = useState<boolean>(false);
+  const [isDeleteModalOpen, setDeleteAddModalOpen] = useState<boolean>(false);
 
-  const openCloseEditModal = async () => {
+  const [isAddPurchaseOrderOpen, setIsAddPurchaseOrderOpen] = useState<boolean>(false);
+
+  const openAddCuastomerModal = async () => {
     await refresher();
-    setIsEditModalOpen(!isEditModalOpen);
+    setIsAddPurchaseOrderOpen(!openAddCuastomerModal);
+
   }
 
-  const handleOk = async() => {
+  const closeAddPurchaseOrder = async () => {
     await refresher();
-    setOpen(false)
-  };
+    setIsAddPurchaseOrderOpen(false);
+  }
 
-  const handleCancel = () => {
-    console.log('Clicked cancel button');
-    setOpen(false);
-  };
 
-  const columns: ColumnsType<DeliveryOrderModel> = [
+  const columns: ColumnsType<PhurchaseOrderModel> = [
     {
-      title: "Order ID",
+      title: "ID",
       dataIndex: "_id",
-      key: "id",
+      key: "id"
     },
     {
-      title:"PO Number",
-      key:"poNo",
+      title: "Purchase Date",
+      dataIndex: "purchaseOrderDate",
+      key: "purchase-date"
     },
     {
-      title:"PO Date",
-      key:"poDate",
+      title: "Supplier Name",
+      dataIndex: "suppierName",
+      key: "nic"
     },
     {
-      title:"Supplier Name",
-      key:"supName",
+      title: "Store",
+      dataIndex: "store",
+      key: "store"
     },
     {
-      title:"Store",
-      key:"Store",
+      title: "Net Amount",
+      dataIndex: "netAmount",
+      key: "netAmount"
     },
+
     {
-      title:"Net Amount",
-      key:"nAmount",
-    },
-    {
-      title: "Status",
+      title: "Actions",
       key: "status",
-      render: (_, record: DeliveryOrderModel) => {
+      render: (_, record: PhurchaseOrderModel) => {
         return <Space size="middle">
           <Button icon={<EditOutlined />} onClick={() => {
-            const d: DeliveryOrderModel = {
+            const d: PhurchaseOrderModel = {
               _id: record._id,
-              date: new Date(record.date),
-              transactionDate: new Date(record.transactionDate),
-              transactionType: record.transactionType,
-              coustomer: record.coustomer,
-              shippingAddress: record.shippingAddress,
+              purchaseOrderDate: record.purchaseOrderDate,
+              suppierName: record.suppierName,
+              store: record.store,
+              netAmount: record.netAmount,
               status: record.status,
-              totalBill: record.totalBill,
               companyId: record.companyId,
             }
-
-            setSelectedOrder(d)
-            setIsEditModalOpen(true)
+            setSelectedPurchaseOrder(d)
+            setIsEditaModalOpen(true)
           }}></Button>
           <Button icon={<DeleteOutlined />} onClick={() => {
-            const d: DeliveryOrderModel = {
+            const d: PhurchaseOrderModel = {
               _id: record._id,
-              date: new Date(record.date),
-              transactionDate: new Date(record.transactionDate),
-              transactionType: record.transactionType,
-              coustomer: record.coustomer,
-              shippingAddress: record.shippingAddress,
+              purchaseOrderDate: record.purchaseOrderDate,
+              suppierName: record.suppierName,
+              store: record.store,
+              netAmount: record.netAmount,
               status: record.status,
-              totalBill: record.totalBill,
               companyId: record.companyId,
+
             }
-            setSelectedOrder(d);
-            setIsDeleteModalOpen(true)
+            setSelectedPurchaseOrder(d);
+            setDeleteAddModalOpen(true)
           }}></Button>
         </Space>
       }
     },
-    {
-      title:"Action",
-      key:"action",
-    }
   ]
 
-
-  const deleteDeliveryOrder = async () => {
-    await purchaseOrderservice.deleteDeliveryItem(selectedOrder?._id!);
-    await refresher()
-    setIsDeleteModalOpen(false)
-  }
-
   const refresher = async () => {
-    await purchaseOrderservice.getDeliveryItems(0, 10)
-      .then((val) => {
-        setpurchaseOrders([...val])
-      });
+    await PurchaseOrderService.getPurchaseOrders(1, 10).then(result => {
+      setPurchaseOrders([...result])
+    });
   }
-
 
   useEffect(() => {
-    purchaseOrderservice.getDeliveryItems(0, 10)
-      .then((val) => {
-        setpurchaseOrders([...val])
-      });
-  }, []);
+    PurchaseOrderService.getPurchaseOrders(1, 10).then(result => {
+      setPurchaseOrders([...result])
+    });
+  }, [])
 
   return (
     <WrapperContainer>
       <CustomRow>
-        <Title level={3}>Delivery Order</Title>
+        <Title level={3}>PurchaseOrders</Title>
         <Tooltip title="Add Delivery Order">
-          <Button type="primary" shape="circle" icon={<PlusCircleOutlined />} onClick={() => { setOpen(true) }} />
+          <Button type="primary" shape="circle" icon={<PlusCircleOutlined />} onClick={() => { setIsAddPurchaseOrderOpen(true) }} />
         </Tooltip>
       </CustomRow>
       <Table columns={columns} className="table" dataSource={purchaseOrders} />
-      <CreateDeliveryOrderModal
-        shouldOpen={open}
-        confirmLoading={confirmLoading}
-        handleCancel={handleCancel}
-        handleOk={handleOk} />
-      <CreateDeliveryOrderModal
-        shouldOpen={isEditModalOpen}
-        confirmLoading={false}
-        handleCancel={openCloseEditModal}
-        handleOk={openCloseEditModal}
-        deliveryOrder={selectedOrder}
-      />
-      <DeleteModal isModalOpen={deleteModalOpen} handleOk={deleteDeliveryOrder} handleCancel={() => { console.log("cale"); setIsDeleteModalOpen(false) }} text={"Delete delivery order"} />
+      <AddPurchaseOrder handleOk={openAddCuastomerModal} handleCancel={closeAddPurchaseOrder} shouldOpen={isAddPurchaseOrderOpen} />
+      <AddPurchaseOrder handleOk={async () => { await refresher(); setIsEditaModalOpen(false); }} handleCancel={() => { setIsEditaModalOpen(false); }} shouldOpen={isEditModalOpen} order={selectedPurchaseOrder} />
     </WrapperContainer>
   )
 }
 
-export default DeliveryOrder
+export default PurchaseOrder

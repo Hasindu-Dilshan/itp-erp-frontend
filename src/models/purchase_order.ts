@@ -1,10 +1,9 @@
-export interface PhurchaseOrder {
-    _id : string,
-    name: string;
-    description: string;
-    manufacturer: string;
-    supplier: string;
-    in_stock_amount: number;
-    unit_price: number;
-    type: string;
+export interface PhurchaseOrderModel {
+    _id?: string,
+    purchaseOrderDate: Date,
+    suppierName: string,
+    store: string,
+    netAmount: number,
+    status: boolean,
+    companyId: string,
 }
