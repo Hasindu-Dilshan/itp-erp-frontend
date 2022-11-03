@@ -1,10 +1,10 @@
 export interface CustomeModel {
-    _id: string,
+    _id?: string,
     date: Date,
     name: string,
     nic: string,
     mobile: string,
     email: string,
     address: string,
-    companyId: number,
+    companyId: string,
 }

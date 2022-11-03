@@ -1,11 +1,11 @@
 
-import http,{post,put} from "../../http-common"
-import { DeliveryOrderModel } from "../../models/delivery_order_model"
-import companyId from "../../config"
-const url ="http://127.0.0.1:6000";
+import http, { post, put } from "../http-common"
+import { DeliveryOrderModel } from "../models/delivery_order_model"
+import companyId from "../config"
+const url = "http://127.0.0.1:8080";
 
 
-const getDeliveryItems = async (offset: number, pagination: number) : Promise<DeliveryOrderModel[]> => {
+const getDeliveryItems = async (offset: number, pagination: number): Promise<DeliveryOrderModel[]> => {
    return await http.get(`delivery-order/${companyId.companyId}/${pagination}/${offset}`).then((result) => {
       return result.data.orders;
    }).catch(err => {
@@ -17,7 +17,7 @@ const getDeliveryItems = async (offset: number, pagination: number) : Promise<De
 }
 
 const updateDeliverItem = (id: number, deliveryOrder: DeliveryOrderModel) => {
-   put(url+"/update-delivery-order/"+{id},
+   put(url + "/update-delivery-order/" + { id },
       {
          date: deliveryOrder.date,
          transactionDate: deliveryOrder.transactionDate,
@@ -33,14 +33,9 @@ const updateDeliverItem = (id: number, deliveryOrder: DeliveryOrderModel) => {
 }
 
 const createDeliveryItem = async (deliveryOrder: DeliveryOrderModel) => {
-   const config = {
-      headers: {
-         "Content-type": "application/json",
-         "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3R1c2VyQGdtYWlsLmNvbSIsImlhdCI6MTY2NzI5MDA0MSwiZXhwIjozMzM0OTQwMDgyLCJpc3MiOiJFUlAifQ.x-mnubQ7H2987g6uAnHqYxWM5GVrws1G4WEGOzpJJ_E",
-      }
-   };
- 
-   post(url+"/delivery-order/create-delivery-order",
+
+
+   post(url + "/delivery-order/create-delivery-order",
       {
          date: deliveryOrder.date,
          transactionDate: deliveryOrder.transactionDate,
@@ -60,8 +55,8 @@ const createDeliveryItem = async (deliveryOrder: DeliveryOrderModel) => {
 
 }
 
-const deleteDeliveryItem = (id: string) => {
-   http.delete(`delivery-order/delete-delivery-order/${id}`).then(result => result.status);
+const deleteDeliveryItem = async (id: string) => {
+   await http.delete(`delivery-order/delete-delivery-order/${id}`).then(result => result.status);
 }
 
 const DeliveryOrderService = { getDeliveryItems, updateDeliverItem, createDeliveryItem, deleteDeliveryItem }

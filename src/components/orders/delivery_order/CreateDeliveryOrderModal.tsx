@@ -1,8 +1,8 @@
 import { MouseEvent, useEffect, useState } from 'react'
 import { DatePicker, Form, Modal, Col, Row, Input, Button, Table, Dropdown, Menu, Space, } from 'antd';
 import { DeliveryOrderModel } from "../../../models/delivery_order_model"
-
-import DeliveryOrderService from '../../../services/delivery_order/delivery_order_service';
+import stringValidator from "../../common/validation_helper"
+import DeliveryOrderService from '../../../services/delivery_order_service';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { ColumnsType } from 'antd/lib/table'
 import { ItemModel } from '../../purchase_request/item_model';
@@ -10,7 +10,7 @@ import { DownOutlined } from '@ant-design/icons';
 interface Props {
    shouldOpen: boolean,
    confirmLoading: boolean,
-   handleOk: ((e: MouseEvent<HTMLElement, globalThis.MouseEvent>) => void),
+   handleOk: () => void,
    handleCancel: ((e: MouseEvent<HTMLElement, globalThis.MouseEvent>) => void),
    deliveryOrder?: DeliveryOrderModel
 }
@@ -73,9 +73,11 @@ const CreateDeliveryOrderModal = ({ shouldOpen, handleOk, handleCancel, confirmL
       DeliveryOrderService.createDeliveryItem(deliveryOrder).then((val) => {
 
 
-      });
+      }).catch(err=>console.log(`create delivery order failed ${err}`));
 
-      //handleOk(e);
+
+
+      handleOk();
    }
 
 
@@ -135,7 +137,7 @@ const CreateDeliveryOrderModal = ({ shouldOpen, handleOk, handleCancel, confirmL
          setCustomersName(deliveryOrder.coustomer);
          setAddress(deliveryOrder.shippingAddress);
 
-         
+
       }
    }, [selectedItems, deliveryOrder])
 
@@ -144,19 +146,20 @@ const CreateDeliveryOrderModal = ({ shouldOpen, handleOk, handleCancel, confirmL
          title="Create Delivery Order"
          open={shouldOpen}
          onOk={createDeliveryOrder}
-         confirmLoading={confirmLoading}
          onCancel={handleCancel}
          width={1000}
+         footer={null}
       >
          <Form
             layout="vertical"
-           
+
          >
             <Row>
                <Col span={12}>
                   <Form.Item
                      name="transaction-date"
                      label="Transaction Date"
+                    
                   >
                      <DatePicker onChange={(val) => {
                         if (val) {
@@ -173,6 +176,7 @@ const CreateDeliveryOrderModal = ({ shouldOpen, handleOk, handleCancel, confirmL
                   <Form.Item
                      name="delivery-date"
                      label="Delivery Date"
+                    
                   >
                      <DatePicker
                         onChange={(val) => {
@@ -195,6 +199,7 @@ const CreateDeliveryOrderModal = ({ shouldOpen, handleOk, handleCancel, confirmL
                   <Form.Item
                      name="name"
                      label="Customers Name"
+                     rules={stringValidator("Customer Name is required")}
                   >
                      <Input onChange={(val) => { setCustomersName(val.target.value) }} value="{customersName}" />
                   </Form.Item>
@@ -206,18 +211,26 @@ const CreateDeliveryOrderModal = ({ shouldOpen, handleOk, handleCancel, confirmL
                   <Form.Item
                      name="address"
                      label="Address"
+                     rules={stringValidator("Customer Address is required")}
                   >
                      <Input.TextArea value={address} rows={3} onChange={(val) => { setAddress(val.target.value) }} />
                   </Form.Item>
                </Col>
 
             </Row>
+            <Button onClick={() => { openCloseAddItemModal() }} shape="circle" icon={<PlusCircleOutlined />} />
 
+            <Table columns={columns} className="table" dataSource={selectedItems} />
+            <h1> Total Bill : {totalBill}</h1>
+            <Row>
+               <Col span={19} />
+               <Col span={4}>
+                  <Button type='primary' htmlType='submit' onClick={createDeliveryOrder} style={{ width: "100%" }}>Create Order</Button>
+               </Col>
+            </Row>
          </Form>
-         <Button onClick={() => { openCloseAddItemModal() }} shape="circle" icon={<PlusCircleOutlined />} />
 
-         <Table columns={columns} className="table" dataSource={selectedItems} />
-         <h1> Total Bill : {totalBill}</h1>
+
          <Modal title="Add Item" open={isOpen} onOk={() => addItem()} onCancel={() => { openCloseAddItemModal() }}>
             <Form>
                <Row>

@@ -1,7 +1,7 @@
 import Table, { ColumnsType } from 'antd/lib/table'
 import React, { useEffect, useState } from 'react'
 import { DeliveryOrderModel } from '../../../models/delivery_order_model'
-import DeliveryOrderService from '../../../services/delivery_order/delivery_order_service'
+import DeliveryOrderService from '../../../services/delivery_order_service'
 import CustomRow from '../../common/Row'
 import { Typography } from 'antd';
 import WrapperContainer from '../../common/WrapperContainer'
@@ -30,12 +30,9 @@ const DeliveryOrder = () => {
     setIsEditModalOpen(!isEditModalOpen);
   }
 
-  const handleOk = () => {
-    setConfirmLoading(true);
-    setTimeout(() => {
-      setOpen(false);
-      setConfirmLoading(false);
-    }, 2000);
+  const handleOk = async() => {
+    await refresher();
+    setOpen(false)
   };
 
   const handleCancel = () => {
@@ -104,11 +101,25 @@ const DeliveryOrder = () => {
               totalBill: record.totalBill,
               companyId: record.companyId,
             }
-         
+
             setSelectedOrder(d)
-          setIsEditModalOpen(true)
+            setIsEditModalOpen(true)
           }}></Button>
-          <Button icon={<DeleteOutlined />} onClick={() => { /*setIsDeleteModalOpen(true)*/ }}></Button>
+          <Button icon={<DeleteOutlined />} onClick={() => {
+            const d: DeliveryOrderModel = {
+              _id: record._id,
+              date: new Date(record.date),
+              transactionDate: new Date(record.transactionDate),
+              transactionType: record.transactionType,
+              coustomer: record.coustomer,
+              shippingAddress: record.shippingAddress,
+              status: record.status,
+              totalBill: record.totalBill,
+              companyId: record.companyId,
+            }
+            setSelectedOrder(d);
+            setIsDeleteModalOpen(true)
+          }}></Button>
         </Space>
       }
     },
@@ -117,7 +128,7 @@ const DeliveryOrder = () => {
 
   const deleteDeliveryOrder = async () => {
     await DeliveryOrderService.deleteDeliveryItem(selectedOrder?._id!);
-    refresher()
+    await refresher()
     setIsDeleteModalOpen(false)
   }
 
@@ -141,7 +152,7 @@ const DeliveryOrder = () => {
       <CustomRow>
         <Title level={3}>Delivery Order</Title>
         <Tooltip title="Add Delivery Order">
-          <Button type="primary" shape="circle" icon={<PlusCircleOutlined />} onClick={()=>{setOpen(true)}} />
+          <Button type="primary" shape="circle" icon={<PlusCircleOutlined />} onClick={() => { setOpen(true) }} />
         </Tooltip>
       </CustomRow>
       <Table columns={columns} className="table" dataSource={deliveryOrders} />
@@ -149,7 +160,7 @@ const DeliveryOrder = () => {
         shouldOpen={open}
         confirmLoading={confirmLoading}
         handleCancel={handleCancel}
-        handleOk={handleOk}/>
+        handleOk={handleOk} />
       <CreateDeliveryOrderModal
         shouldOpen={isEditModalOpen}
         confirmLoading={false}
