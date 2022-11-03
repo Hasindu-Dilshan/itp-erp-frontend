@@ -29,7 +29,7 @@ const AddItemModal = ({ isOpen, handleCancel, handleOk, item }: Props) => {
       }
       await ItemService.createDeliveryItem(item)
          .catch(err => console.log(`create item failed ${err}`))
-
+handleOk();
    }
 
 
