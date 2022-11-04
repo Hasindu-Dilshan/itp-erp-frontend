@@ -2,7 +2,7 @@
 import http, { post, put } from "../http-common"
 import { ItemModel } from "../models/item_model"
 import companyId from "../config"
-const url = "http://127.0.0.1:8090";
+const url = "http://127.0.0.1:8080";
 
 
 const getDeliveryItems = async (offset: number, pagination: number): Promise<ItemModel[]> => {
@@ -22,7 +22,7 @@ const updateDeliverItem = (id: number, item: ItemModel) => {
          name: item.name,
          price: item.price,
          inStock: item.inStock,
-         manufacturer: item.manufacturedBy,
+         manufacturer: item.manufacturer,
          supplier: item.supplier,
       }
    ).then(result => result.data);
@@ -36,7 +36,7 @@ const createDeliveryItem = async (item: ItemModel) => {
          name: item.name,
          price: item.price,
          inStock: item.inStock,
-         manufacturer: item.manufacturedBy,
+         manufacturer: item.manufacturer,
          supplier: item.supplier,
          companyId: item.companyId
       },
