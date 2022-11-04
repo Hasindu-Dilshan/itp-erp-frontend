@@ -3,7 +3,7 @@ export interface ItemModel {
    name : string,
    price : number,
    inStock : boolean,
-   manufacturedBy : string,
+   manufacturer : string,
    supplier : string,
    companyId : string,
 }

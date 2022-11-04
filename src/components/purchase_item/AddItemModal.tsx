@@ -24,7 +24,7 @@ const AddItemModal = ({ isOpen, handleCancel, handleOk, item }: Props) => {
       const item: ItemModel = {
          name: itemName,
          price: itemPrice,
-         manufacturedBy: itemManufacturer,
+         manufacturer: itemManufacturer,
          inStock: true,
          supplier: supplier,
          companyId: "1",
@@ -81,7 +81,9 @@ handleOk();
                      label="Item manufacturer"
                      name={"item-manufacturer"}
                      rules={stringValidator("Please enter item manufacturer")}>
-                     <Input onChange={(val) => {
+                     <Input 
+
+                        onChange={(val) => {
                         if (val) {
                            setItemManufacturer(val.target.value);
                         }
