@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-
+import { useReactToPrint } from 'react-to-print';
 
 import { PlusCircleOutlined } from '@ant-design/icons';
 import CustomRow from '../common/Row';
@@ -11,6 +11,7 @@ import { CustomeModel } from '../../models/customer_model';
 import AddCustomerModal from './AddCustomerModal';
 import CustomerService from '../../services/customer_service';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+
 const { Title } = Typography;
 
 
@@ -22,7 +23,13 @@ const Customer = () => {
   const [isEditModalOpen, setIsEditaModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setDeleteAddModalOpen] = useState<boolean>(false);
 
+
+
   const [isAddCustomerOpen, setIsAddCustomerOpen] = useState<boolean>(false);
+
+
+
+
 
   const openAddCuastomerModal = async () => {
     await refresher();
@@ -34,6 +41,7 @@ const Customer = () => {
     await refresher();
     setIsAddCustomerOpen(false);
   }
+
 
 
   const columns: ColumnsType<CustomeModel> = [
@@ -128,7 +136,7 @@ const Customer = () => {
       </CustomRow>
       <Table columns={columns} className="table" dataSource={customers} />
       <AddCustomerModal handleOk={openAddCuastomerModal} handleCancel={closeAddCustomerModal} isOpen={isAddCustomerOpen} />
-      <AddCustomerModal handleOk={async()=>{await refresher();setIsEditaModalOpen(false);}} handleCancel={()=>{setIsEditaModalOpen(false);}} isOpen={isEditModalOpen}  customer={selectedCustomer}/>
+      <AddCustomerModal handleOk={async () => { await refresher(); setIsEditaModalOpen(false); }} handleCancel={() => { setIsEditaModalOpen(false); }} isOpen={isEditModalOpen} customer={selectedCustomer} />
     </WrapperContainer>
   )
 }

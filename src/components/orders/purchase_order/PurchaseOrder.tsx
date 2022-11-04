@@ -12,6 +12,7 @@ import { PhurchaseOrderModel } from '../../../models/purchase_order';
 import PurchaseOrderService from '../../../services/purchase_service';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import AddPurchaseOrder from './AddPurchaseOrder';
+import DeleteModal from '../../common/DeleteModal';
 const { Title } = Typography;
 
 
@@ -36,6 +37,14 @@ const PurchaseOrder = () => {
     setIsAddPurchaseOrderOpen(false);
   }
 
+
+  const deletePurchaseOrder = async () => {
+    if (selectedPurchaseOrder) {
+      await PurchaseOrderService.deleteDeliveryItem(selectedPurchaseOrder?._id!);
+      await refresher()
+      setDeleteAddModalOpen(false);
+    }
+  }
 
   const columns: ColumnsType<PhurchaseOrderModel> = [
     {
@@ -124,6 +133,7 @@ const PurchaseOrder = () => {
       <Table columns={columns} className="table" dataSource={purchaseOrders} />
       <AddPurchaseOrder handleOk={openAddCuastomerModal} handleCancel={closeAddPurchaseOrder} shouldOpen={isAddPurchaseOrderOpen} />
       <AddPurchaseOrder handleOk={async () => { await refresher(); setIsEditaModalOpen(false); }} handleCancel={() => { setIsEditaModalOpen(false); }} shouldOpen={isEditModalOpen} order={selectedPurchaseOrder} />
+      <DeleteModal text='Delete purchase order' isModalOpen={isDeleteModalOpen} handleCancel={() => { setDeleteAddModalOpen(false) }} handleOk={deletePurchaseOrder} />
     </WrapperContainer>
   )
 }

@@ -88,7 +88,7 @@ const PuchaseItems = () => {
            name : record.name,
            price : record.price,
            inStock : record.inStock,
-           manufacturedBy : record.manufacturedBy,
+           manufacturer : record.manufacturer,
            supplier : record.supplier,
            companyId : record.companyId,
           }

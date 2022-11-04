@@ -22,7 +22,7 @@ const updateDeliverItem = (id: number, item: ItemModel) => {
          name: item.name,
          price: item.price,
          inStock: item.inStock,
-         manufacturer: item.manufacturedBy,
+         manufacturer: item.manufacturer,
          supplier: item.supplier,
       }
    ).then(result => result.data);
@@ -36,7 +36,7 @@ const createDeliveryItem = async (item: ItemModel) => {
          name: item.name,
          price: item.price,
          inStock: item.inStock,
-         manufacturer: item.manufacturedBy,
+         manufacturer: item.manufacturer,
          supplier: item.supplier,
          companyId: item.companyId
       },
