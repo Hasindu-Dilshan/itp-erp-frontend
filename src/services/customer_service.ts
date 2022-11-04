@@ -16,8 +16,8 @@ const getCustomers = async (offset: number, pagination: number): Promise<Custome
 
 }
 
-const updateCustomer = (id: number, Customer: CustomeModel) => {
-   put(url + "/update-customer/" + { id },
+const updateCustomer = async(id: string, Customer: CustomeModel) => {
+  await put(url + `/customer/update-customer/${id}`,
       {
          date: Customer.date,
          name: Customer.name,

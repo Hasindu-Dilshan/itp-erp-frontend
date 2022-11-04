@@ -1,13 +1,9 @@
 import React from 'react'
 import { MouseEvent, useEffect, useState } from 'react'
 import { Form, Modal, Col, Row, Input, Button, Select, } from 'antd';
-import { DeliveryOrderModel } from "../../models/delivery_order_model"
-import stringValidator from "../common/validation_helper"
-import DeliveryOrderService from '../../services/delivery_order_service';
-import { PlusCircleOutlined } from '@ant-design/icons';
-import { ColumnsType } from 'antd/lib/table'
 
-import { DownOutlined } from '@ant-design/icons';
+import stringValidator from "../common/validation_helper"
+
 import numberValidator from '../common/number_validator';
 import ItemService from '../../services/item_service';
 import { ItemModel } from '../../models/item_model';
