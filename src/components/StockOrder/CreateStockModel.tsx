@@ -72,7 +72,12 @@ const CreateStockModal = ({ shouldOpen, handleOk, handleCancel, order }: Props) 
     }
     handleOk();
   }
-
+const data= {
+ itemName: order?.name? order?.name : "",
+          itemManufacturer: manufacturer,
+          itemPrice: price,
+          itemQuantity: orderQty
+}
 
   return (
     <Modal
@@ -87,18 +92,16 @@ const CreateStockModal = ({ shouldOpen, handleOk, handleCancel, order }: Props) 
       <Form
         layout='vertical'
         autoComplete="false"
-        initialValues={{
-          "item-name": name,
-          "item-manufacturer": manufacturer,
-          "item-price": price,
-          "item-quantity": orderQty
-        }}
+        initialValues={
+         data
+        }
       >
         <Row>
           <Col span={11}>
             <Form.Item
               label="Item name"
-              name={"item-name"}
+              name="itemName"
+              initialValue={data.itemName}
 
               rules={stringValidator("Please enter item name")}
             >
@@ -137,7 +140,7 @@ const CreateStockModal = ({ shouldOpen, handleOk, handleCancel, order }: Props) 
           <Col span={11}>
             <Form.Item
               label="Manufafturer"
-              name={"item-manufacturer"}
+              name="itemManufacturer"
               initialValue={
                 manufacturer
               }
@@ -152,7 +155,7 @@ const CreateStockModal = ({ shouldOpen, handleOk, handleCancel, order }: Props) 
           <Col span={11}>
             <Form.Item
               label="Price"
-              name={"item-price"}
+              name={"itemPrice"}
               initialValue={
                 price
               }
@@ -171,7 +174,7 @@ const CreateStockModal = ({ shouldOpen, handleOk, handleCancel, order }: Props) 
           <Col span={11}>
             <Form.Item
               label="Quantity"
-              name={"item-quantity"}
+              name={"itemQuantity"}
               rules={numberValidator("Please enter valid item quantity")}
             >
               <Input onChange={(val) => { setOrderQty(parseInt(val.target.value)) }} />
