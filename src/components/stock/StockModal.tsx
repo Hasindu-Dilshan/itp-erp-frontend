@@ -1,11 +1,10 @@
 import { Button, Col, Form, Input, Modal, Row } from 'antd'
 import React, { useState } from 'react'
 import { ItemModel } from '../../models/item_model'
-import ItemService from '../../services/item_service'
+import { StockOrderModel } from '../../models/stock_order_model'
+import StockOrderService from '../../services/stock_order_service'
 import numberValidator from '../common/number_validator'
 import stringValidator from '../common/validation_helper'
-import LogRocket from 'logrocket';
-LogRocket.init('yjover/erp');
 
 interface Props {
    isOpen: boolean,
@@ -19,19 +18,18 @@ const AddItemModal = ({ isOpen, handleCancel, handleOk, item }: Props) => {
    const [itemName, setItemName] = useState<string>("");
    const [itemPrice, setItemPrice] = useState<number>(0);
    const [itemManufacturer, setItemManufacturer] = useState<string>("");
-   const [supplier, setSupplier] = useState<string>("");
+   const [quantity, setQty] = useState<number>(0);
    const createItem = async () => {
-      const item: ItemModel = {
+      const item: StockOrderModel = {
          name: itemName,
          price: itemPrice,
-         manufacturedBy: itemManufacturer,
-         inStock: true,
-         supplier: supplier,
-         companyId: "1",
+         manufacturer:itemManufacturer,
+         orderqty:quantity,
+         companyId:"1",
       }
-      await ItemService.createDeliveryItem(item)
+      await StockOrderService.createStockQty(item)
          .catch(err => console.log(`create item failed ${err}`))
-handleOk();
+
    }
 
 
@@ -97,7 +95,7 @@ handleOk();
                      <Input
                         onChange={(val) => {
                            if (val) {
-                              setSupplier(val.target.value);
+                              //setSupplier(val.target.value);
                            }
                         }} />
                   </Form.Item>

@@ -8,6 +8,6 @@ export interface SalesOderModel {
     totalBill: number;
     status: number;
     companyId: string;
-    itemId : string,
+    itemId? : string,
     itemName : string,
 }

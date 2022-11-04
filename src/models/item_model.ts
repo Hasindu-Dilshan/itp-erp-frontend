@@ -1,7 +1,9 @@
 export interface ItemModel {
-   _id : string,
+   _id? : string,
    name : string,
    price : number,
-   status : boolean,
-   manufacturer : string
+   inStock : boolean,
+   manufacturedBy : string,
+   supplier : string,
+   companyId : string,
 }
