@@ -5,7 +5,7 @@ import type { MenuProps } from 'antd';
 import { Layout, Menu } from 'antd';
 import React, { useState } from 'react';
 import { Typography } from 'antd';
-import WrapperCard from "../common/WrapperCard";
+
 import DashboardBody from "./DashboardBody";
 import Customer from "../customers/Customer";
 import DeliveryOrder from "../orders/delivery_order/DeliveryOrder";
@@ -16,9 +16,10 @@ import PuchaseItems from "../purchase_item/PuchaseItems";
 import Users from "../Users/Users";
 import StockOrder from "../StockOrder/StockOrder";
 
+import { BankTwoTone,UserOutlined ,MoneyCollectFilled,LineChartOutlined,StockOutlined,TeamOutlined ,ShoppingCartOutlined,CarFilled} from '@ant-design/icons'
 
 const { Header, Content, Footer, Sider } = Layout;
-const { Title } = Typography;
+
 type MenuItem = Required<MenuProps>['items'][number];
 
 
@@ -26,25 +27,26 @@ const Dashboard = () => {
     function getItem(
         label: React.ReactNode,
         key: number,
-
+        icon?: React.ReactNode,
 
     ): MenuItem {
         return {
             key,
             label,
+            icon,
             onClick: () => { setActiveIndex(key) }
         } as MenuItem;
     }
     const items: MenuItem[] = [
-        getItem('Dashboard', 0,),
-        getItem('Customers', 1,),
-        getItem('Delivery Order', 2),
-        getItem('Sales Order', 3),
-        getItem('Purchase Order', 4),
-        getItem('Purchase Request', 5),
-        getItem('Items', 6),
-        getItem('Users', 7,),
-        getItem('Stock Orders   ', 8,),
+        getItem('Dashboard', 0,<BankTwoTone />),
+        getItem('Customers', 1,<UserOutlined />),
+        getItem('Delivery Order', 2,<CarFilled />),
+        getItem('Sales Order', 3,<LineChartOutlined />),
+        getItem('Purchase Order', 4,<MoneyCollectFilled />),
+        // getItem('Purchase Request', 5),
+        getItem('Items', 6,<ShoppingCartOutlined />),
+        getItem('Users', 7,<TeamOutlined />),
+        getItem('Stock Orders   ', 8,<StockOutlined />),
     
     ];
 
@@ -74,7 +76,7 @@ const Dashboard = () => {
 
                 <Sider collapsible collapsed={collapsed} onCollapse={value => setCollapsed(value)}>
                     <div className="logo" />
-                    <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
+                    <Menu theme="dark" defaultSelectedKeys={['0']} mode="inline" items={items} />
                 </Sider>
                 <Layout className="site-layout">
 
