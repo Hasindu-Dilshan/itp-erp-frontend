@@ -2,7 +2,7 @@
 import http, { post, put } from "../http-common"
 import { PhurchaseRequestModel } from "../models/purchase_request"
 import companyId from "../config"
-const url = "http://127.0.0.1:8090";
+const url = "https://lozzby.herokuapp.com";
 
 
 const getPurchaseRequests = async (offset: number, pagination: number): Promise<PhurchaseRequestModel[]> => {

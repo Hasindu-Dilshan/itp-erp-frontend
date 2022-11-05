@@ -1,4 +1,4 @@
-import { Form, Modal, Row, Button, DatePicker, Input, Select, Col } from 'antd'
+import { Form, Modal, Row, Button, DatePicker, Input, Select, Col, Table } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { PhurchaseRequestModel } from '../../models/purchase_request'
 import PurchaseOrderService from '../../services/purchase_request_service'
@@ -6,6 +6,16 @@ import numberValidator from '../common/number_validator'
 import stringValidator from '../common/validation_helper'
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { PurchaseRequestOrderModel } from '../../models/purchase_request_order_model'
+
+import { ColumnsType } from 'rc-table/lib/interface'
+
+
+interface DummItemModel {
+   "_id": string,
+   "price": number,
+   "item_name": string,
+   "companyName": string,
+}
 
 interface Props {
    isOpen: boolean,
@@ -15,6 +25,58 @@ interface Props {
 }
 
 
+const dummyItems = [
+   {
+      "_id": "asdad",
+      "price": 14810,
+      "item_name": "Television",
+      "companyName": "Kaluthara Branch",
+   },
+   {
+      "_id": "asdad",
+      "price": 14810,
+      "item_name": "Television",
+      "companyName": "Kaluthara Branch",
+   },
+   {
+      "_id": "asdad",
+      "price": 14810,
+      "item_name": "Television",
+      "companyName": "Kaluthara Branch",
+   },
+   {
+      "_id": "asdad",
+      "price": 14810,
+      "item_name": "Television",
+      "companyName": "Kaluthara Branch",
+   },
+   {
+      "_id": "asdad",
+      "price": 14810,
+      "item_name": "Television",
+      "companyName": "Kaluthara Branch",
+   },
+];
+
+
+const dummySuppliyers = [
+   {
+      "suppliter": "Kaluthara Branch",
+      "_id": "1",
+   },
+   {
+      "suppliter": "Kaluthara Branch",
+      "_id": "1",
+   },
+   {
+      "suppliter": "Kaluthara Branch",
+      "_id": "1",
+   },
+   {
+      "suppliter": "Kaluthara Branch",
+      "_id": "1",
+   },
+]
 
 const AddPurchaseRequest = ({ isOpen, handleCancel, handleOk, request }: Props) => {
 
@@ -27,9 +89,29 @@ const AddPurchaseRequest = ({ isOpen, handleCancel, handleOk, request }: Props) 
    const [selectedItem, setSelectedItem] = useState<PhurchaseRequestModel>();
    const [isAddModal, setIsAddModal] = useState<boolean>(false);
 
-   const [selectedItems,setSelectedItems] = useState<PurchaseRequestOrderModel[]>(); 
+   const [selectedItems, setSelectedItems] = useState<PurchaseRequestOrderModel[]>([]);
 
 
+
+   const columns: ColumnsType<PurchaseRequestOrderModel>= [
+      {
+         title: "Item Name",
+         dataIndex: "name",
+         key: "name",
+      },
+      {
+         title: "Quantity",
+         dataIndex: "quantity",
+         key: "quantity",
+      },
+      {
+         title: "Unit Price",
+         dataIndex: "unitPrice",
+         key: "unitPrice",
+      },
+
+
+   ]
    const openCloseAddItemModal = () => {
       setIsAddModal(!isAddModal)
    }
@@ -97,10 +179,10 @@ const AddPurchaseRequest = ({ isOpen, handleCancel, handleOk, request }: Props) 
          width={1000}
          title={request ? "Edit Purchase request" : "Add Purchase request"}
          footer={null}
-      >
+      >  
          <Button onClick={() => { openCloseAddItemModal() }} shape="circle" icon={<PlusCircleOutlined />} />
 
-
+         {/* <Table columns={columns} dataSource={selectedItems} /> */}
 
       </Modal>
    )
