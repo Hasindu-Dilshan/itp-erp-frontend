@@ -1,4 +1,4 @@
-import { Badge, Button, Space, Table } from 'antd'
+import { Badge, Button, Input, Space, Table } from 'antd'
 import React, { useState, useEffect } from 'react'
 import AddButton from '../common/AddButton'
 import CustomRow from '../common/Row'
@@ -6,7 +6,7 @@ import WrapperCard from '../common/WrapperCard'
 import WrapperContainer from '../common/WrapperContainer'
 import { ItemModel } from '../../models/item_model'
 import { ColumnsType } from 'antd/lib/table'
-import { EditOutlined, DeleteOutlined,DownloadOutlined } from '@ant-design/icons'
+import { EditOutlined, DeleteOutlined,DownloadOutlined,SelectOutlined } from '@ant-design/icons'
 import AddItemModal from './AddItemModal'
 import ItemService from '../../services/item_service'
 import DeleteModal from '../common/DeleteModal'
@@ -82,6 +82,36 @@ const PuchaseItems = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => {
+        return <>
+          <Input
+            value={selectedKeys[0]}
+            onChange={(val) => {
+              setSelectedKeys(val.target.value ? [val.target.value] : [])
+              confirm({closeDropdown : false})
+            }}
+            onPressEnter={() => {
+              confirm()
+            }}
+            onBlur={() => {
+              confirm()
+            }}
+          ></Input>
+          <Button type="primary"
+            onClick={() => { confirm(); }}>Search
+          </Button>
+          
+          
+        </>
+      },
+      filterIcon: () => {
+        return <SelectOutlined style={{ color: "red" }} />
+      },
+      onFilter: (value, record) => {
+        return record.name.toLowerCase().includes(value.toString().toLowerCase())
+      }
+      
+
     },
     {
       title: "Price",

@@ -4,13 +4,13 @@ import React, { useEffect, useState } from 'react'
 import { PlusCircleOutlined } from '@ant-design/icons';
 import CustomRow from '../../common/Row';
 import WrapperContainer from '../../common/WrapperContainer'
-import { Button, Space, Tooltip } from 'antd'
+import { Button, Input, Space, Tooltip } from 'antd'
 import { Typography } from 'antd';
 import Table, { ColumnsType } from 'antd/lib/table';
 import { PhurchaseOrderModel } from '../../../models/purchase_order';
 
 import PurchaseOrderService from '../../../services/purchase_service';
-import { EditOutlined, DeleteOutlined ,DownloadOutlined} from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined,SelectOutlined ,DownloadOutlined} from '@ant-design/icons';
 import AddPurchaseOrder from './AddPurchaseOrder';
 import DeleteModal from '../../common/DeleteModal';
 import jsPDF from 'jspdf';
@@ -102,6 +102,36 @@ const PurchaseOrder = () => {
       title: "Supplier Name",
       dataIndex: "suppierName",
       key: "nic",
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => {
+        return <>
+          <Input
+            value={selectedKeys[0]}
+            onChange={(val) => {
+              setSelectedKeys(val.target.value ? [val.target.value] : [])
+              confirm({closeDropdown : false})
+            }}
+            onPressEnter={() => {
+              confirm()
+            }}
+            onBlur={() => {
+              confirm()
+            }}
+          ></Input>
+          <Button type="primary"
+            onClick={() => { confirm(); }}>Search
+          </Button>
+          <Button type="ghost"
+            onClick={()=>  {}}>Reset
+          </Button>
+          
+        </>
+      },
+      filterIcon: () => {
+        return <SelectOutlined style={{ color: "red" }} />
+      },
+      onFilter: (value, record) => {
+        return record.suppierName.toLowerCase().includes(value.toString().toLowerCase())
+      },
       render: (_, record: PhurchaseOrderModel) => {
         return <div>{record.suppierName.toString().split("T")[0]}</div>
       }
