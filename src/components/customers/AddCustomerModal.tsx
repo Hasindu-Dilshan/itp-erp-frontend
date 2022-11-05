@@ -23,24 +23,26 @@ const AddCustomerModal = ({ isOpen, handleCancel, handleOk, customer }: Props) =
    const [address, setAddress] = useState("")
 
    const createCustomer = async () => {
-      const c: CustomeModel = {
-         name: name,
-         date: new Date(),
-         nic,
-         mobile,
-         email,
-         address,
-         companyId: "1"
-      }
+      if (name !== "" && nic !== "" && mobile !== "" && email !== "" && address !== "") {
+         const c: CustomeModel = {
+            name: name,
+            date: new Date(),
+            nic,
+            mobile,
+            email,
+            address,
+            companyId: "1"
+         }
 
-      if (customer) {
-         console.log(c);
-         await CustomerService.updateCustomer(customer?._id!, c).catch(errr => console.log(`update customer failed ${errr}`))
-      } else {
-         await CustomerService.createCustomer(c).catch(errr => console.log(`create customer failed ${errr}`))
-      }
+         if (customer) {
+            console.log(c);
+            await CustomerService.updateCustomer(customer?._id!, c).catch(errr => console.log(`update customer failed ${errr}`))
+         } else {
+            await CustomerService.createCustomer(c).catch(errr => console.log(`create customer failed ${errr}`))
+         }
 
-      handleOk();
+         handleOk();
+      }
    }
 
    useEffect(() => {
