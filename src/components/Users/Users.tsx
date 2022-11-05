@@ -1,4 +1,4 @@
-import { Button, Select, Space, Table } from 'antd'
+import { Button, Select, Space, Table, Tooltip } from 'antd'
 import { ColumnsType } from 'antd/lib/table'
 import React, { useEffect } from 'react'
 import { EmployeeModel } from '../../models/employee_model'
@@ -144,7 +144,9 @@ const Users = () => {
       <WrapperCard>
         <CustomRow style={{ justifyContent: "space-between", padding: "16px" }} >
           <h1>Users</h1>
+          <Tooltip title="Add user">
           <AddButton onClick={() => { setIsAddUser(true) }} />
+          </Tooltip>
         </CustomRow>
         <Table dataSource={employees} columns={columns} style={{ width: "100%", height: "100%" }} />
       </WrapperCard>
