@@ -1,5 +1,5 @@
 import { Button, Col, Form, Input, Modal, Row } from 'antd'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ItemModel } from '../../models/item_model'
 import ItemService from '../../services/item_service'
 import numberValidator from '../common/number_validator'
@@ -21,19 +21,36 @@ const AddItemModal = ({ isOpen, handleCancel, handleOk, item }: Props) => {
    const [itemManufacturer, setItemManufacturer] = useState<string>("");
    const [supplier, setSupplier] = useState<string>("");
    const createItem = async () => {
-      const item: ItemModel = {
-         name: itemName,
-         price: itemPrice,
-         manufacturer: itemManufacturer,
-         inStock: true,
-         supplier: supplier,
-         companyId: "1",
-      }
-      await ItemService.createDeliveryItem(item)
-         .catch(err => console.log(`create item failed ${err}`))
-handleOk();
-   }
 
+      if (itemName !== "" && itemPrice !== 0 && itemManufacturer !== "" && supplier !== "") {
+         const i: ItemModel = {
+            name: itemName,
+            price: itemPrice,
+            manufacturer: itemManufacturer,
+            inStock: true,
+            supplier: supplier,
+            companyId: "1",
+         }
+         if (item) {
+            await ItemService.updateDeliverItem(item._id!, i)
+         } else {
+            await ItemService.createDeliveryItem(i)
+               .catch(err => console.log(`create item failed ${err}`))
+         }
+         handleOk();
+      } else {
+         console.log("else caleed " + itemName);
+      }
+   }
+   useEffect(() => {
+      if (item) {
+         setItemManufacturer(item.manufacturer)
+         setItemName(item.name)
+         setItemPrice(item.price)
+         setSupplier(item.supplier)
+        
+      }
+   }, [item])
 
    return (
       <Modal
@@ -41,7 +58,7 @@ handleOk();
          onCancel={handleCancel}
          onOk={handleOk}
          width={1000}
-         title="Add item"
+         title={item ? "Edit Item" : "Add item"}
          footer={null}
       >
          <Form
@@ -51,27 +68,33 @@ handleOk();
             <Row>
                <Col span={11}>
                   <Form.Item
+                     initialValue={item?.name}
                      label="Item name"
                      name={"item-name"}
                      rules={stringValidator("Please enter item name")}>
-                     <Input onChange={(val) => {
-                        if (val) {
-                           setItemName(val.target.value);
-                        }
-                     }} />
+                     <Input
+                        value={itemName}
+                        onChange={(val) => {
+                           if (val) {
+                              setItemName(val.target.value);
+                           }
+                        }} />
                   </Form.Item>
                </Col>
                <Col span={2} />
                <Col span={11}>
                   <Form.Item
+                     initialValue={item?.price}
                      label="Item price"
                      name={"item-price"}
                      rules={numberValidator("Please enter item price")}>
-                     <Input onChange={(val) => {
-                        if (val) {
-                           setItemPrice(parseInt(val.target.value));
-                        }
-                     }} />
+                     <Input
+                        value={itemPrice}
+                        onChange={(val) => {
+                           if (val) {
+                              setItemPrice(parseInt(val.target.value));
+                           }
+                        }} />
                   </Form.Item>
                </Col>
             </Row>
@@ -80,14 +103,15 @@ handleOk();
                   <Form.Item
                      label="Item manufacturer"
                      name={"item-manufacturer"}
+                     initialValue={item?.manufacturer}
                      rules={stringValidator("Please enter item manufacturer")}>
-                     <Input 
-
+                     <Input
+                        value={itemManufacturer}
                         onChange={(val) => {
-                        if (val) {
-                           setItemManufacturer(val.target.value);
-                        }
-                     }} />
+                           if (val) {
+                              setItemManufacturer(val.target.value);
+                           }
+                        }} />
                   </Form.Item>
                </Col>
                <Col span={2} />
@@ -95,8 +119,11 @@ handleOk();
                   <Form.Item
                      label="Item Supplier"
                      name={"item-supplier"}
-                     rules={stringValidator("Please enter item supplier")}>
+                     rules={stringValidator("Please enter item supplier")}
+                     initialValue={item?.supplier}
+                  >
                      <Input
+                        value={supplier}
                         onChange={(val) => {
                            if (val) {
                               setSupplier(val.target.value);
@@ -108,7 +135,7 @@ handleOk();
             <Row>
                <Col span={19} />
                <Col span={5}>
-                  <Button type='primary' htmlType='submit' style={{ width: "100%" }} onClick={createItem}>Add Item</Button>
+                  <Button type='primary' htmlType='submit' style={{ width: "100%" }} onClick={createItem}>{item ? "Edit Item" : "Add Item"}</Button>
                </Col>
             </Row>
          </Form>

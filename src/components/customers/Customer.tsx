@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { useReactToPrint } from 'react-to-print';
-
 import { PlusCircleOutlined } from '@ant-design/icons';
 import CustomRow from '../common/Row';
 import WrapperContainer from '../common/WrapperContainer'
@@ -11,6 +9,7 @@ import { CustomeModel } from '../../models/customer_model';
 import AddCustomerModal from './AddCustomerModal';
 import CustomerService from '../../services/customer_service';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import DeleteModal from '../common/DeleteModal';
 
 const { Title } = Typography;
 
@@ -45,11 +44,11 @@ const Customer = () => {
 
 
   const columns: ColumnsType<CustomeModel> = [
-    {
-      title: "ID",
-      dataIndex: "_id",
-      key: "id"
-    },
+    // {
+    //   title: "ID",
+    //   dataIndex: "_id",
+    //   key: "id"
+    // },
     {
       title: "Name",
       dataIndex: "name",
@@ -114,6 +113,14 @@ const Customer = () => {
     },
   ]
 
+  const deleteCustomer  = async()=>{
+
+    await CustomerService.deleteCustomer(selectedCustomer?._id!)
+    await refresher()
+    setDeleteAddModalOpen(false);
+}
+
+
   const refresher = async () => {
     await CustomerService.getCustomers(1, 10).then(result => {
       setCustomers([...result])
@@ -135,9 +142,10 @@ const Customer = () => {
         </Tooltip>
       </CustomRow>
       <Table columns={columns} className="table" dataSource={customers} />
-      <AddCustomerModal handleOk={openAddCuastomerModal} handleCancel={closeAddCustomerModal} isOpen={isAddCustomerOpen} />
+      <AddCustomerModal handleOk={async()=>{await refresher(); setIsAddCustomerOpen(false); }} handleCancel={closeAddCustomerModal} isOpen={isAddCustomerOpen} />
       <AddCustomerModal handleOk={async () => { await refresher(); setIsEditaModalOpen(false); }} handleCancel={() => { setIsEditaModalOpen(false); }} isOpen={isEditModalOpen} customer={selectedCustomer} />
-    </WrapperContainer>
+      <DeleteModal isModalOpen={isDeleteModalOpen} handleCancel={()=>{setDeleteAddModalOpen(false)}} handleOk={deleteCustomer} text="Do you want t delete this customer ?" />  
+ </WrapperContainer>
   )
 }
 

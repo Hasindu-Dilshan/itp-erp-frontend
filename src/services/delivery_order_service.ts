@@ -16,8 +16,8 @@ const getDeliveryItems = async (offset: number, pagination: number): Promise<Del
 
 }
 
-const updateDeliverItem = (id: number, deliveryOrder: DeliveryOrderModel) => {
-   put(url + "/update-delivery-order/" + { id },
+const updateDeliverItem = async (id: string, deliveryOrder: DeliveryOrderModel) => {
+   await put(url + `/delivery-order/update-delivery-order/${id}`,
       {
          date: deliveryOrder.date,
          transactionDate: deliveryOrder.transactionDate,
