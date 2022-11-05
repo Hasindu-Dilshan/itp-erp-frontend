@@ -6,9 +6,9 @@ import CustomRow from '../../common/Row'
 import { Input, Typography } from 'antd';
 import WrapperContainer from '../../common/WrapperContainer'
 import { PlusCircleOutlined } from '@ant-design/icons';
-import { Button, Tooltip, Space } from 'antd';
+import { Button, Tooltip, Space, Select } from 'antd';
 import CreateDeliveryOrderModal from './CreateDeliveryOrderModal'
-import { EditOutlined, DeleteOutlined,DownloadOutlined,SelectOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, DownloadOutlined, SelectOutlined } from '@ant-design/icons';
 import DeleteModal from '../../common/DeleteModal'
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
@@ -32,7 +32,7 @@ const DeliveryOrder = () => {
     setIsEditModalOpen(false);
   }
 
-  const handleOk = async() => {
+  const handleOk = async () => {
     await refresher();
     setOpen(false)
   };
@@ -57,7 +57,7 @@ const DeliveryOrder = () => {
       body: deliveryOrders.map(order => {
         return {
           date: order.date.toString(),
-          transactionDate: order.transactionDate.toString (),
+          transactionDate: order.transactionDate.toString(),
           coustomer: order.coustomer,
           shippingAddress: order.shippingAddress,
           totalBill: order.totalBill,
@@ -79,7 +79,7 @@ const DeliveryOrder = () => {
     {
       title: "Placed Date",
       key: "placed-date",
-      
+
       render: (_, record: DeliveryOrderModel) => {
         return <div>{record.date.toString().split("T")[0]}</div>
       }
@@ -103,7 +103,7 @@ const DeliveryOrder = () => {
             value={selectedKeys[0]}
             onChange={(val) => {
               setSelectedKeys(val.target.value ? [val.target.value] : [])
-              confirm({closeDropdown : false})
+              confirm({ closeDropdown: false })
             }}
             onPressEnter={() => {
               confirm()
@@ -116,9 +116,9 @@ const DeliveryOrder = () => {
             onClick={() => { confirm(); }}>Search
           </Button>
           <Button type="ghost"
-            onClick={()=>  {}}>Reset
+            onClick={() => { }}>Reset
           </Button>
-          
+
         </>
       },
       filterIcon: () => {
@@ -142,7 +142,29 @@ const DeliveryOrder = () => {
       title: "Order Status",
       key: "status",
       render: (_, record: DeliveryOrderModel) => {
-        return <p>{record.status === 0 ? "Not Completed" : "Completed"}</p>
+        return (<Select
+          defaultValue={record.status}
+          onChange={async(val) => {
+            if (val) {
+              const order: DeliveryOrderModel = {
+                _id: record._id,
+                date: record.date,
+                transactionDate: record.transactionDate,
+                transactionType: record.transactionType,
+                coustomer: record.coustomer,
+                shippingAddress: record.shippingAddress,
+                totalBill: record.totalBill,
+                status: val,
+                companyId: record.companyId,
+              }
+              await DeliveryOrderService.updateDeliverItem(record?._id!, order)
+              await refresher()
+            }
+          }}
+        >
+          <Select.Option value={1}>Completed</Select.Option>
+          <Select.Option value={0}>Not Completed</Select.Option>
+        </Select>)
       }
     },
     {
@@ -213,10 +235,10 @@ const DeliveryOrder = () => {
       <CustomRow>
         <Title level={3}>Delivery Order</Title>
         <div>
-          <Button style={{margin:"0 16px"}} onClick={generatePdf} shape="circle" icon={<DownloadOutlined/>} type="primary"/>
-        <Tooltip title="Add Delivery Order">
-          <Button type="primary" shape="circle" icon={<PlusCircleOutlined />} onClick={() => { setOpen(true) }} />
-        </Tooltip>
+          <Button style={{ margin: "0 16px" }} onClick={generatePdf} shape="circle" icon={<DownloadOutlined />} type="primary" />
+          <Tooltip title="Add Delivery Order">
+            <Button type="primary" shape="circle" icon={<PlusCircleOutlined />} onClick={() => { setOpen(true) }} />
+          </Tooltip>
         </div>
       </CustomRow>
       <Table columns={columns} className="table" dataSource={deliveryOrders} />
