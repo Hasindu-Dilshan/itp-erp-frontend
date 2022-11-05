@@ -20,6 +20,7 @@ const AddItemModal = ({ isOpen, handleCancel, handleOk, item }: Props) => {
    const [itemPrice, setItemPrice] = useState<number>(0);
    const [itemManufacturer, setItemManufacturer] = useState<string>("");
    const [supplier, setSupplier] = useState<string>("");
+   const [refesh,seRefesh] = useState<any>(false);
    const createItem = async () => {
 
       if (itemName !== "" && itemPrice !== 0 && itemManufacturer !== "" && supplier !== "") {
@@ -33,6 +34,7 @@ const AddItemModal = ({ isOpen, handleCancel, handleOk, item }: Props) => {
          }
          if (item) {
             await ItemService.updateDeliverItem(item._id!, i)
+            seRefesh(true)
          } else {
             await ItemService.createDeliveryItem(i)
                .catch(err => console.log(`create item failed ${err}`))
@@ -50,8 +52,10 @@ const AddItemModal = ({ isOpen, handleCancel, handleOk, item }: Props) => {
          setSupplier(item.supplier)
         
       }
-   }, [item])
-
+   }, [item,refesh])
+   useEffect(() => {
+     
+   }, [refesh])
    return (
       <Modal
          open={isOpen}
