@@ -1,14 +1,14 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState } from 'react'
 import { PlusCircleOutlined } from '@ant-design/icons';
 import CustomRow from '../common/Row';
 import WrapperContainer from '../common/WrapperContainer'
-import { Button, Space, Tooltip } from 'antd'
+import { Button, Space, Tooltip, Input } from 'antd'
 import { Typography } from 'antd';
 import Table, { ColumnsType } from 'antd/lib/table';
 import { CustomeModel } from '../../models/customer_model';
 import AddCustomerModal from './AddCustomerModal';
 import CustomerService from '../../services/customer_service';
-import { EditOutlined, DeleteOutlined, DownloadOutlined  } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, DownloadOutlined, SelectOutlined } from '@ant-design/icons';
 import DeleteModal from '../common/DeleteModal';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -23,19 +23,14 @@ const Customer = () => {
   const [selectedCustomer, setSelectedCustomer] = useState<CustomeModel>();
   const [isEditModalOpen, setIsEditaModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setDeleteAddModalOpen] = useState<boolean>(false);
-  const componentRef = useRef<any>();
+
 
 
   const [isAddCustomerOpen, setIsAddCustomerOpen] = useState<boolean>(false);
 
-
-
-
-
   const openAddCuastomerModal = async () => {
     await refresher();
     setIsAddCustomerOpen(!openAddCuastomerModal);
-
   }
 
   const closeAddCustomerModal = async () => {
@@ -79,7 +74,38 @@ const Customer = () => {
     {
       title: "Name",
       dataIndex: "name",
-      key: "name"
+      key: "name",
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => {
+        return <>
+          <Input
+            value={selectedKeys[0]}
+            onChange={(val) => {
+              setSelectedKeys(val.target.value ? [val.target.value] : [])
+              confirm({closeDropdown : false})
+            }}
+            onPressEnter={() => {
+              confirm()
+            }}
+            onBlur={() => {
+              confirm()
+            }}
+          ></Input>
+          <Button type="primary"
+            onClick={() => { confirm(); }}>Search
+          </Button>
+          <Button type="ghost"
+            onClick={()=>{}}>Reset
+          </Button>
+          
+        </>
+      },
+      filterIcon: () => {
+        return <SelectOutlined style={{ color: "red" }} />
+      },
+      onFilter: (value, record) => {
+        return record.name.toLowerCase().includes(value.toString().toLowerCase())
+      }
+
     },
     {
       title: "NIC",
@@ -165,7 +191,7 @@ const Customer = () => {
       <CustomRow>
         <Title level={3}>Customers</Title>
         <div>
-          <Button  style={{margin : "0 16px"}} onClick={generatePdf} shape="circle" icon={<DownloadOutlined />} type="primary" />
+          <Button style={{ margin: "0 16px" }} onClick={generatePdf} shape="circle" icon={<DownloadOutlined />} type="primary" />
           <Tooltip title="Add Customer">
             <Button type="primary" shape="circle" icon={<PlusCircleOutlined />} onClick={() => { setIsAddCustomerOpen(true) }} />
           </Tooltip>
