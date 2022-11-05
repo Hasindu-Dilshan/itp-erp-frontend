@@ -22,7 +22,7 @@ const CreateStockModal = ({ shouldOpen, handleOk, handleCancel, order }: Props) 
   const [name, setName] = useState<string>("")
   const [price, setPrice] = useState<number>(0)
   const [manufacturer, setManufacturer] = useState<string>("")
-  const [orderQty, setOrderQty] = useState<number>(0)
+  const [orderqty, setOrderQty] = useState<number>(0)
   const [enableEditin, setEnableEditing] = useState<boolean>(false);
   const [enableDrop, setEnableDrop] = useState<boolean>(false);
   const [items, setItems] = useState<ItemModel[]>([])
@@ -46,16 +46,16 @@ const CreateStockModal = ({ shouldOpen, handleOk, handleCancel, order }: Props) 
         setItems([...res]);
       })
       .catch(err => console.log(`get items from db failed ${err}`))
-  }, [manufacturer, name, order, orderQty, price])
+  }, [manufacturer, name, order, orderqty, price])
 
 
   const createStockOrder = async () => {
     if (name !== "") {
-      console.log(orderQty)
+      console.log(`ordrnqtyu =>${orderqty}`)
       console.log(manufacturer)
       const o: StockOrderModel = {
         name: name,
-        orderqty: orderQty,
+        orderqty: orderqty,
         price: price,
         manufacturer: manufacturer,
         companyId: "1"
@@ -177,7 +177,7 @@ const CreateStockModal = ({ shouldOpen, handleOk, handleCancel, order }: Props) 
               rules={numberValidator("Please enter valid item quantity")}
              // initialValue={data?.itemQuantity}
             >
-              <Input  value={orderQty} onChange={(val) => { setOrderQty(parseInt(val.target.value));console.log(orderQty) }} />
+              <Input  value={orderqty} onChange={(val) => { setOrderQty(parseInt(val.target.value));console.log(orderqty) }} />
             </Form.Item>
           </Col>
         </Row>
