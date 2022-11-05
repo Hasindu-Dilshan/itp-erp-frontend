@@ -78,6 +78,7 @@ const PurchaseRequest = () => {
       key: "status",
       render: (_, record: PhurchaseRequestModel) => {
         return <Space size="middle">
+          <Tooltip title="Add Purchase Request">
           <Button icon={<EditOutlined />} onClick={() => {
             const d: PhurchaseRequestModel = {
               _id: record._id,
@@ -90,6 +91,7 @@ const PurchaseRequest = () => {
             setSelectedPurchaseRequest(d)
             setIsEditaModalOpen(true)
           }}></Button>
+          </Tooltip>
           <Button icon={<DeleteOutlined />} onClick={() => {
             const d: PhurchaseRequestModel = {
               _id: record._id,
@@ -123,7 +125,7 @@ const PurchaseRequest = () => {
     <WrapperContainer>
       <CustomRow>
         <Title level={3}>PurchaseRequests</Title>
-        <Tooltip title="Add Delivery Order">
+        <Tooltip title="Add Perchase Request">
           <Button type="primary" shape="circle" icon={<PlusCircleOutlined />} onClick={() => { setIsAddPurchaseRequestOpen(true) }} />
         </Tooltip>
       </CustomRow>

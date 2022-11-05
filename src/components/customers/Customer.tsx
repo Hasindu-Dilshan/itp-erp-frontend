@@ -165,12 +165,9 @@ const Customer = () => {
     <WrapperContainer>
       <CustomRow>
         <Title level={3}>Customers</Title>
-        <div>
-          <Button shape='circle' style={{ margin: "0 16px" }} onClick={generatePdf} icon={<VerticalAlignBottomOutlined />} type="primary"/>
-          <Tooltip title="Add Delivery Order">
-            <Button type="primary" shape="circle" icon={<PlusCircleOutlined />} onClick={() => { setIsAddCustomerOpen(true) }} />
-          </Tooltip>
-        </div>
+        <Tooltip title="Add Customer">
+          <Button type="primary" shape="circle" icon={<PlusCircleOutlined />} onClick={() => { setIsAddCustomerOpen(true) }} />
+        </Tooltip>
       </CustomRow>
       <Table columns={columns} className="table" dataSource={customers} />
       <AddCustomerModal handleOk={async () => { await refresher(); setIsAddCustomerOpen(false); }} handleCancel={closeAddCustomerModal} isOpen={isAddCustomerOpen} />
