@@ -8,7 +8,7 @@ import { ItemModel } from '../../purchase_request/item_model';
 import { DownOutlined } from '@ant-design/icons';
 import { PhurchaseOrderModel } from '../../../models/purchase_order';
 import PurchaseOrderService from '../../../services/purchase_service';
-import numberValidator from '../../common/number_validator';
+
 interface Props {
    shouldOpen: boolean,
    handleOk: () => void,
