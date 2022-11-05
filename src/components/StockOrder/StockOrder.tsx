@@ -65,7 +65,7 @@ const StockOrder = () => {
     {
       title: "Instock Quantity",
       dataIndex: "orderqty",
-      key: "qty",
+      key: "orderqty",
     },
     {
       title: "Actions",
