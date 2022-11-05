@@ -2,6 +2,7 @@
 import http, { post, put } from "../http-common"
 import { SalesOderModel } from "../models/sales_order_model"
 import companyId from "../config"
+import NotificationService from "./notification_servce";
 const url = "https://lozzby.herokuapp.com";
 
 
@@ -29,7 +30,10 @@ const updateDeliverItem =async(id: string, SalesOrder: SalesOderModel) => {
          customerType: "a",
          companyId: SalesOrder.companyId,
       }
-   ).then(result => result.status);
+   ).then(result => {
+      NotificationService.openNotification("Success","Sales Order Updated Successfuly")
+      return result.status
+   });
 }
 
 const createSalesItem = async (SalesOrder: SalesOderModel) => {
@@ -49,14 +53,18 @@ const createSalesItem = async (SalesOrder: SalesOderModel) => {
       },
    ).then(result => {
       console.log(result.data);
-      return result.status;
+      NotificationService.openNotification("Success","Sales Order Created Successfuly")
+      return result.status
    }).catch(err => console.log(err));
    // console.log("order created")
 
 }
 
 const deleteSalesItem = async (id: string) => {
-   await http.delete(`sales-order/delete-sales-order/${id}`).then(result => result.status);
+   await http.delete(`sales-order/delete-sales-order/${id}`).then(result => {
+      NotificationService.openNotification("Success","Sales Order Deleted Successfuly")
+      return result.status
+   });
 }
 
 const SalesOrderService = { getSalesItems, updateDeliverItem, createSalesItem, deleteSalesItem }

@@ -2,6 +2,7 @@
 import http, { post, put } from "../http-common"
 import { PhurchaseRequestModel } from "../models/purchase_request"
 import companyId from "../config"
+import NotificationService from "./notification_servce";
 const url = "https://lozzby.herokuapp.com";
 
 
@@ -23,7 +24,10 @@ const updatePurchaseRequest = async (id: string, purchaseRequest: PhurchaseReque
          totalBill: purchaseRequest.totalBill,
          status: purchaseRequest.status,
       }
-   ).then(result => result.data);
+   ).then(result => {
+      NotificationService.openNotification("Success","Purchase Request Updated Successfuly")
+      return result.status
+   });
 }
 
 const createPurchaseRequest = async (purchaseRequest: PhurchaseRequestModel) => {
@@ -37,7 +41,8 @@ const createPurchaseRequest = async (purchaseRequest: PhurchaseRequestModel) => 
       },
    ).then(result => {
       console.log(result.data);
-      return result.data;
+      NotificationService.openNotification("Success","Purchase Request Created Successfuly")
+      return result.status
    }).catch(err => console.log(err));
    // console.log("order created")
 
@@ -45,7 +50,10 @@ const createPurchaseRequest = async (purchaseRequest: PhurchaseRequestModel) => 
 
 const deletePurchaseRequest = async (id: string) => {
    console.log("called")
-   await http.delete(`purchase-request/${id}`).then(result => result.data);
+   await http.delete(`purchase-request/${id}`).then(result =>{ 
+      NotificationService.openNotification("Success","Purchase Request Deleted Successfuly")
+      return result.status
+   });
 }
 
 const PurchaseRequestService = { getPurchaseRequests, updatePurchaseRequest, createPurchaseRequest, deletePurchaseRequest }

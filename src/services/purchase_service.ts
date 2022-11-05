@@ -2,6 +2,7 @@
 import http, { post, put } from "../http-common"
 import { PhurchaseOrderModel } from "./../models/purchase_order"
 import companyId from "../config"
+import NotificationService from "./notification_servce";
 const url = "https://lozzby.herokuapp.com";
 
 
@@ -27,7 +28,10 @@ const updatePurchaseOrder = async (id: string, purchaseOrder: PhurchaseOrderMode
          status: purchaseOrder.status,
          companyId: purchaseOrder.companyId,
       }
-   ).then(result => result.status);
+   ).then(result => {
+      NotificationService.openNotification("Success","Purchase Order Updated Successfuly")
+      return result.status
+   });
 }
 
 const createDeliveryItem = async (purchaseOrder: PhurchaseOrderModel) => {
@@ -42,14 +46,18 @@ const createDeliveryItem = async (purchaseOrder: PhurchaseOrderModel) => {
       },
    ).then(result => {
       console.log(result.data);
-      return result.status;
+      NotificationService.openNotification("Success","Purchase Order Created Successfuly")
+      return result.status
    }).catch(err => console.log(err));
    // console.log("order created")
 
 }
 
 const deleteDeliveryItem = async (id: string) => {
-   await http.delete(`purchase-order/delete-purchase-order/${id}`).then(result => result.status);
+   await http.delete(`purchase-order/delete-purchase-order/${id}`).then(result => {
+      NotificationService.openNotification("Success","Purchase Order Deleted Successfuly")
+      return result.status
+   });
 }
 
 const PurchaseOrderService = { getPurchaseOrders, updatePurchaseOrder, createDeliveryItem, deleteDeliveryItem }

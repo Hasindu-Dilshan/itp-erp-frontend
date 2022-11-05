@@ -2,6 +2,7 @@
 import http, { post, put } from "../http-common"
 import { CustomeModel } from "../models/customer_model"
 import companyId from "../config"
+import NotificationService from "./notification_servce";
 const url = "https://lozzby.herokuapp.com";
 
 
@@ -28,7 +29,11 @@ const updateCustomer = async(id: string, Customer: CustomeModel) => {
 
          companyId: Customer.companyId,
       }
-   ).then(result => result.status);
+   ).then(result => {
+      NotificationService.openNotification("Success","Customer Updated Successfuly")
+      return result.status 
+      
+   });
 }
 
 const createCustomer = async (Customer: CustomeModel) => {
@@ -45,6 +50,7 @@ const createCustomer = async (Customer: CustomeModel) => {
          companyId: Customer.companyId,
       }
    ).then(result => {
+      NotificationService.openNotification("Success","Customer Created Successfuly")
       console.log(result.data);
       return result.status;
    }).catch(err => console.log(err));
@@ -53,7 +59,10 @@ const createCustomer = async (Customer: CustomeModel) => {
 }
 
 const deleteCustomer = async (id: string) => {
-   await http.delete(`customer/delete-customer/${id}`).then(result => result.status);
+   await http.delete(`customer/delete-customer/${id}`).then(result =>{
+      NotificationService.openNotification("Success","Customer Deleted Successfuly")
+      return result.status 
+   });
 }
 
 const CustomerService = { getCustomers, updateCustomer, createCustomer, deleteCustomer }

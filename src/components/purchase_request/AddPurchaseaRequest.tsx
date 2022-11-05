@@ -93,7 +93,7 @@ const AddPurchaseRequest = ({ isOpen, handleCancel, handleOk, request }: Props) 
 
 
 
-   const columns: ColumnsType<PurchaseRequestOrderModel>= [
+   const columns: ColumnsType<PurchaseRequestOrderModel> = [
       {
          title: "Item Name",
          dataIndex: "name",
@@ -179,11 +179,66 @@ const AddPurchaseRequest = ({ isOpen, handleCancel, handleOk, request }: Props) 
          width={1000}
          title={request ? "Edit Purchase request" : "Add Purchase request"}
          footer={null}
-      >  
+      >
+
+         <Form
+            layout='vertical'
+         >
+            <Form.Item>
+               <Select
+                  defaultValue={requestToName}
+                  onChange={(val) => {
+                     if (val) {
+                        setRequestToName(val)
+                     }
+                  }}
+               >
+                  {
+                     dummySuppliyers.map(supplier => {
+                        return <Select.Option key={supplier._id} value={supplier.suppliter}>
+                           {supplier.suppliter}
+                        </Select.Option>
+                     })
+                  }
+               </Select>
+            </Form.Item>
+         </Form>
+
          <Button onClick={() => { openCloseAddItemModal() }} shape="circle" icon={<PlusCircleOutlined />} />
 
          {/* <Table columns={columns} dataSource={selectedItems} /> */}
+         <Modal
+            open={isAddModal}
+            title="Add Item"
+            footer={null}
+         >
+            <Row>
+               <Col span={6}>
+                  <Select
+                     style={{ width: "100%" }}
+                     onChange={(val) => {
+                        if (val) {
+                           dummyItems.forEach(item => {
+                              if (item.item_name === val) {
+                       
+                              }
+                           })
+                        }
+                     }}
+                  >
+                     {
+                        dummyItems.map(item => {
+                           return <Select.Option value={item.item_name}>{item.item_name}</Select.Option>
+                        })
+                     }
+                  </Select>
+               </Col>
+               <Col span={6}>
 
+               </Col>
+               <Col span={6}></Col>
+            </Row>
+         </Modal>
       </Modal>
    )
 }

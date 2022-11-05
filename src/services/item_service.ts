@@ -2,6 +2,7 @@
 import http, { post, put } from "../http-common"
 import { ItemModel } from "../models/item_model"
 import companyId from "../config"
+import NotificationService from "./notification_servce";
 
 
 const url = "https://lozzby.herokuapp.com";
@@ -27,7 +28,10 @@ const updateDeliverItem = async (id: string, item: ItemModel) => {
          manufacturer: item.manufacturer,
          supplier: item.supplier,
       }
-   ).then(result => result.data);
+   ).then(result =>{
+      NotificationService.openNotification("Success","Item Updated Successfuly")
+      return result.status
+   });
 }
 
 const createDeliveryItem = async (item: ItemModel) => {
@@ -44,7 +48,8 @@ const createDeliveryItem = async (item: ItemModel) => {
       },
    ).then(result => {
       console.log(result.data);
-      return result.data;
+      NotificationService.openNotification("Success","Item Craeted Successfuly")
+      return result.status
    }).catch(err => console.log(err));
    // console.log("order created")
 
@@ -52,7 +57,10 @@ const createDeliveryItem = async (item: ItemModel) => {
 
 const deleteDeliveryItem = async (id: string) => {
    console.log("called")
-   await http.delete(`item-controller/${id}`).then(result => result.data);
+   await http.delete(`item-controller/${id}`).then(result =>{ 
+      NotificationService.openNotification("Success","Item Deleted Successfuly")
+      return result.status
+   });
 }
 
 
