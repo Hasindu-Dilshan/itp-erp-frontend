@@ -83,35 +83,14 @@ const AddPurchaseRequest = ({ isOpen, handleCancel, handleOk, request }: Props) 
    const [status, setStatus] = useState<boolean>(false);
    const [requestTo, setRequestTo] = useState<string>("")
    const [requestToName, setRequestToName] = useState<string>("")
-   const [itemName, setItemName] = useState<string>("");
-   const [quantity, setQuantity] = useState<number>(0);
+
    const [totalBill, setTotalBill] = useState<number>(0);
    const [selectedItem, setSelectedItem] = useState<PhurchaseRequestModel>();
    const [isAddModal, setIsAddModal] = useState<boolean>(false);
 
-   const [selectedItems, setSelectedItems] = useState<PurchaseRequestOrderModel[]>([]);
 
 
 
-   const columns: ColumnsType<PurchaseRequestOrderModel>= [
-      {
-         title: "Item Name",
-         dataIndex: "name",
-         key: "name",
-      },
-      {
-         title: "Quantity",
-         dataIndex: "quantity",
-         key: "quantity",
-      },
-      {
-         title: "Unit Price",
-         dataIndex: "unitPrice",
-         key: "unitPrice",
-      },
-
-
-   ]
    const openCloseAddItemModal = () => {
       setIsAddModal(!isAddModal)
    }
@@ -162,13 +141,6 @@ const AddPurchaseRequest = ({ isOpen, handleCancel, handleOk, request }: Props) 
    }, [request])
 
 
-   const data = {
-      requestBy: request?.requestBy,
-      totalBill: request?.totalBill,
-      status: request?.status,
-      requestTo: request?.requestToId,
-      requestToName: request?.requestToId
-   }
 
 
    return (
@@ -179,11 +151,66 @@ const AddPurchaseRequest = ({ isOpen, handleCancel, handleOk, request }: Props) 
          width={1000}
          title={request ? "Edit Purchase request" : "Add Purchase request"}
          footer={null}
-      >  
+      >
+
+         <Form
+            layout='vertical'
+         >
+            <Form.Item>
+               <Select
+                  defaultValue={requestToName}
+                  onChange={(val) => {
+                     if (val) {
+                        setRequestToName(val)
+                     }
+                  }}
+               >
+                  {
+                     dummySuppliyers.map(supplier => {
+                        return <Select.Option key={supplier._id} value={supplier.suppliter}>
+                           {supplier.suppliter}
+                        </Select.Option>
+                     })
+                  }
+               </Select>
+            </Form.Item>
+         </Form>
+
          <Button onClick={() => { openCloseAddItemModal() }} shape="circle" icon={<PlusCircleOutlined />} />
 
          {/* <Table columns={columns} dataSource={selectedItems} /> */}
+         <Modal
+            open={isAddModal}
+            title="Add Item"
+            footer={null}
+         >
+            <Row>
+               <Col span={6}>
+                  <Select
+                     style={{ width: "100%" }}
+                     onChange={(val) => {
+                        if (val) {
+                           dummyItems.forEach(item => {
+                              if (item.item_name === val) {
+                       
+                              }
+                           })
+                        }
+                     }}
+                  >
+                     {
+                        dummyItems.map(item => {
+                           return <Select.Option value={item.item_name}>{item.item_name}</Select.Option>
+                        })
+                     }
+                  </Select>
+               </Col>
+               <Col span={6}>
 
+               </Col>
+               <Col span={6}></Col>
+            </Row>
+         </Modal>
       </Modal>
    )
 }

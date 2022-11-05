@@ -4,8 +4,8 @@ import WrapperCard from '../../common/WrapperCard'
 import CustomRow from '../../common/Row'
 import AddButton from '../../common/AddButton'
 import { SalesOderModel } from '../../../models/sales_order_model'
-import { Button, Select, Space, Table } from 'antd'
-import { EditOutlined, DeleteOutlined ,DownloadOutlined} from '@ant-design/icons'
+import { Button, Input, Select, Space, Table } from 'antd'
+import { EditOutlined, DeleteOutlined ,DownloadOutlined,SelectOutlined} from '@ant-design/icons'
 import { ColumnsType } from 'antd/lib/table'
 import AddSalesOrderModal from './AddSalesOrderModal'
 import SalesOrderService from '../../../services/sales_order_service'
@@ -93,6 +93,35 @@ const SalesOrder = () => {
       title: "Customer Name",
       dataIndex: "coustomer",
       key: "customer",
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => {
+        return <>
+          <Input
+            value={selectedKeys[0]}
+            onChange={(val) => {
+              setSelectedKeys(val.target.value ? [val.target.value] : [])
+              confirm({closeDropdown : false})
+            }}
+            onPressEnter={() => {
+              confirm()
+            }}
+            onBlur={() => {
+              confirm()
+            }}
+          ></Input>
+          <Button type="primary"
+            onClick={() => { confirm(); }}>Search
+          </Button>
+       
+          
+        </>
+      },
+      filterIcon: () => {
+        return <SelectOutlined style={{ color: "red" }} />
+      },
+      onFilter: (value, record) => {
+        return record.coustomer.toLowerCase().includes(value.toString().toLowerCase())
+      }
+      
     },
     {
       title: "Shipping Address",
@@ -183,7 +212,7 @@ const SalesOrder = () => {
       </WrapperCard>
       <AddSalesOrderModal handleOk={addOrder} handleCancel={cancelOrder} isOpen={openAddOrderModal} />
       <AddSalesOrderModal handleOk={addOrder} handleCancel={() => { setOpenEditOrderModal(false) }} isOpen={openEditOrderModal} order={selectedSalesItem} />
-      <DeleteModal isModalOpen={deleteModalOpen} handleOk={deleteSalesOrder} handleCancel={() => { setDeleteModalOpen(false) }} text={"Delete delivery order"} />
+      <DeleteModal isModalOpen={deleteModalOpen} handleOk={deleteSalesOrder} handleCancel={() => { setDeleteModalOpen(false) }} text={"Delete sales order"} />
     </WrapperContainer>
   )
 }

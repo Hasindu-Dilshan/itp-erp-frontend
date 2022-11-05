@@ -2,6 +2,7 @@
 import http, { post, put } from "../http-common"
 import { StockOrderModel } from "../models/stock_order_model"
 import companyId from "../config"
+import NotificationService from "./notification_servce";
 const url = "https://lozzby.herokuapp.com";
 
 
@@ -23,7 +24,10 @@ const updateOrderQty = async (id: string, item: StockOrderModel) => {
         manufacturer: item.manufacturer,
         orderqty: item.orderqty,
       }
-   ).then(result => result.data);
+   ).then(result => {
+      NotificationService.openNotification("Success","Stock Updated Successfuly")
+      return result.status
+   });
 }
 
 const createStockQty = async (item: StockOrderModel) => {
@@ -38,13 +42,17 @@ const createStockQty = async (item: StockOrderModel) => {
       },
    ).then(result => {
       console.log(result.data);
-      return result.data;
+      NotificationService.openNotification("Success","Stock Created Successfuly")
+      return result.status
    }).catch(err => console.log(err));
    // console.log("order created")
 }
 
 const deleteOrderQty = async (id: string) => {
-   await http.delete(`stock-order-controller/${id}`).then(result => result.data);
+   await http.delete(`stock-order-controller/${id}`).then(result => {
+      NotificationService.openNotification("Success","Stock Deleted Successfuly")
+      return result.status
+   });
 }
 
 const StockOrderService = { getOrderQty, updateOrderQty, createStockQty, deleteOrderQty }

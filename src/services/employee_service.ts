@@ -2,6 +2,7 @@
 import http, { post, put } from "../http-common"
 import { EmployeeModel } from "../models/employee_model"
 import companyId from "../config"
+import NotificationService from "./notification_servce";
 const url = "https://lozzby.herokuapp.com";
 
 
@@ -28,7 +29,10 @@ const updateEmployee = async (id: string, employee: EmployeeModel) => {
          address: employee.address,
          contactNumber: employee.contactNumber,
       }
-   ).then(result => result.data);
+   ).then(result =>{
+      NotificationService.openNotification("Success","Employee Updated Successfuly")
+      return result.status
+   });
 }
 
 const createEmployee = async (employee: EmployeeModel) => {
@@ -47,7 +51,8 @@ const createEmployee = async (employee: EmployeeModel) => {
       },
    ).then(result => {
       console.log(result.data);
-      return result.data;
+      NotificationService.openNotification("Success","Employee Created Successfuly")
+      return result.status
    }).catch(err => console.log(err));
    // console.log("order created")
 
@@ -55,7 +60,10 @@ const createEmployee = async (employee: EmployeeModel) => {
 
 const deleteEmployee = async (id: string) => {
    console.log("called")
-   await http.delete(`employee-controller/delete-employee/${id}`).then(result => result.data);
+   await http.delete(`employee-controller/delete-employee/${id}`).then(result =>{
+      NotificationService.openNotification("Success","Employee Deleted Successfuly")
+      return result.status
+   });
 }
 
 const EmployeeService = { getEmployees, updateEmployee, createEmployee, deleteEmployee }

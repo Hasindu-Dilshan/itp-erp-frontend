@@ -3,12 +3,12 @@ import React, { useEffect, useState } from 'react'
 
 import StockOrderService from '../../services/stock_order_service'
 import CustomRow from '../common/Row'
-import { Typography } from 'antd';
+import { Input, Typography } from 'antd';
 import WrapperContainer from '../common/WrapperContainer'
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { Button, Tooltip, Space } from 'antd';
 
-import { EditOutlined, DeleteOutlined,DownloadOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined,DownloadOutlined,SelectOutlined } from '@ant-design/icons';
 import DeleteModal from '../common/DeleteModal'
 import CreateStockModal from './CreateStockModel'
 import { StockOrderModel } from '../../models/stock_order_model'
@@ -74,6 +74,36 @@ const StockOrder = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => {
+        return <>
+          <Input
+            value={selectedKeys[0]}
+            onChange={(val) => {
+              setSelectedKeys(val.target.value ? [val.target.value] : [])
+              confirm({closeDropdown : false})
+            }}
+            onPressEnter={() => {
+              confirm()
+            }}
+            onBlur={() => {
+              confirm()
+            }}
+          ></Input>
+          <Button type="primary"
+            onClick={() => { confirm(); }}>Search
+          </Button>
+          
+          
+        </>
+      },
+      filterIcon: () => {
+        return <SelectOutlined style={{ color: "red" }} />
+      },
+      onFilter: (value, record) => {
+        return record.name.toLowerCase().includes(value.toString().toLowerCase())
+      }
+      
+
     },
     {
       title: "Price",
@@ -155,7 +185,9 @@ const StockOrder = () => {
       <CustomRow style={{padding : "16px 0"}}>
         <Title level={3}>Stock Orders</Title>
         <div>
+        <Tooltip title="Generate PDF">
           <Button style={{margin:"0 16px"}} onClick={generatePdf} shape="circle" icon={<DownloadOutlined/>} type="primary"/>
+        </Tooltip>
         <Tooltip title="Add Stock Item">
           <Button type="primary" shape="circle" icon={<PlusCircleOutlined />} onClick={() => { setOpen(true) }} />
         </Tooltip>
