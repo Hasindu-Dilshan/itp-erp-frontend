@@ -15,7 +15,8 @@ import PurchaseRequest from "../purchase_request/PurchaseRequest";
 import PuchaseItems from "../purchase_item/PuchaseItems";
 import Users from "../Users/Users";
 import StockOrder from "../StockOrder/StockOrder";
-
+import { IconType } from "antd/lib/notification";
+import { BankTwoTone,UserOutlined ,MoneyCollectFilled,LineChartOutlined,StockOutlined,TeamOutlined ,ShoppingCartOutlined,CarFilled} from '@ant-design/icons'
 
 const { Header, Content, Footer, Sider } = Layout;
 const { Title } = Typography;
@@ -26,25 +27,26 @@ const Dashboard = () => {
     function getItem(
         label: React.ReactNode,
         key: number,
-
+        icon?: React.ReactNode,
 
     ): MenuItem {
         return {
             key,
             label,
+            icon,
             onClick: () => { setActiveIndex(key) }
         } as MenuItem;
     }
     const items: MenuItem[] = [
-        getItem('Dashboard', 0,),
-        getItem('Customers', 1,),
-        getItem('Delivery Order', 2),
-        getItem('Sales Order', 3),
-        getItem('Purchase Order', 4),
+        getItem('Dashboard', 0,<BankTwoTone />),
+        getItem('Customers', 1,<UserOutlined />),
+        getItem('Delivery Order', 2,<CarFilled />),
+        getItem('Sales Order', 3,<LineChartOutlined />),
+        getItem('Purchase Order', 4,<MoneyCollectFilled />),
         getItem('Purchase Request', 5),
-        getItem('Items', 6),
-        getItem('Users', 7,),
-        getItem('Stock Orders   ', 8,),
+        getItem('Items', 6,<ShoppingCartOutlined />),
+        getItem('Users', 7,<TeamOutlined />),
+        getItem('Stock Orders   ', 8,<StockOutlined />),
     
     ];
 

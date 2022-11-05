@@ -3,12 +3,12 @@ import React, { useEffect, useState } from 'react'
 import { DeliveryOrderModel } from '../../../models/delivery_order_model'
 import DeliveryOrderService from '../../../services/delivery_order_service'
 import CustomRow from '../../common/Row'
-import { Typography } from 'antd';
+import { Input, Typography } from 'antd';
 import WrapperContainer from '../../common/WrapperContainer'
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { Button, Tooltip, Space } from 'antd';
 import CreateDeliveryOrderModal from './CreateDeliveryOrderModal'
-import { EditOutlined, DeleteOutlined,DownloadOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined,DownloadOutlined,SelectOutlined } from '@ant-design/icons';
 import DeleteModal from '../../common/DeleteModal'
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
@@ -79,6 +79,7 @@ const DeliveryOrder = () => {
     {
       title: "Placed Date",
       key: "placed-date",
+      
       render: (_, record: DeliveryOrderModel) => {
         return <div>{record.date.toString().split("T")[0]}</div>
       }
@@ -96,6 +97,36 @@ const DeliveryOrder = () => {
       title: "Customer Name",
       dataIndex: "coustomer",
       key: "customer",
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => {
+        return <>
+          <Input
+            value={selectedKeys[0]}
+            onChange={(val) => {
+              setSelectedKeys(val.target.value ? [val.target.value] : [])
+              confirm({closeDropdown : false})
+            }}
+            onPressEnter={() => {
+              confirm()
+            }}
+            onBlur={() => {
+              confirm()
+            }}
+          ></Input>
+          <Button type="primary"
+            onClick={() => { confirm(); }}>Search
+          </Button>
+          <Button type="ghost"
+            onClick={()=>  {}}>Reset
+          </Button>
+          
+        </>
+      },
+      filterIcon: () => {
+        return <SelectOutlined style={{ color: "red" }} />
+      },
+      onFilter: (value, record) => {
+        return record.coustomer.toLowerCase().includes(value.toString().toLowerCase())
+      }
     },
     {
       title: "Shipping Address",

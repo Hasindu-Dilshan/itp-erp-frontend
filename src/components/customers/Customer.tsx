@@ -93,9 +93,7 @@ const Customer = () => {
           <Button type="primary"
             onClick={() => { confirm(); }}>Search
           </Button>
-          <Button type="ghost"
-            onClick={()=>{}}>Reset
-          </Button>
+          
           
         </>
       },
@@ -105,6 +103,7 @@ const Customer = () => {
       onFilter: (value, record) => {
         return record.name.toLowerCase().includes(value.toString().toLowerCase())
       }
+      
 
     },
     {
