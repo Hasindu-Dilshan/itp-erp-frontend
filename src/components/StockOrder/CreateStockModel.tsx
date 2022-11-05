@@ -46,7 +46,7 @@ const CreateStockModal = ({ shouldOpen, handleOk, handleCancel, order }: Props) 
         setItems([...res]);
       })
       .catch(err => console.log(`get items from db failed ${err}`))
-  }, [manufacturer, name, order, orderqty, price])
+  }, [manufacturer, name, order, price])
 
 
   const createStockOrder = async () => {
@@ -60,6 +60,7 @@ const CreateStockModal = ({ shouldOpen, handleOk, handleCancel, order }: Props) 
         manufacturer: manufacturer,
         companyId: "1"
       }
+      console.log("order qty===>",orderqty);
       if (order) {
         if (order._id) {
           await StockOrderService.updateOrderQty(order._id, o);
