@@ -16,8 +16,8 @@ const getDeliveryItems = async (offset: number, pagination: number): Promise<Ite
 
 }
 
-const updateDeliverItem = (id: number, item: ItemModel) => {
-   put(url + "/item-controller" + { id },
+const updateDeliverItem = async (id: string, item: ItemModel) => {
+   await put(`${url}/item-controller/${id}`,
       {
          name: item.name,
          price: item.price,
