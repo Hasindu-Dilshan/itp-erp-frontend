@@ -130,7 +130,7 @@ const StockOrder = () => {
     <WrapperContainer>
       <CustomRow style={{padding : "16px 0"}}>
         <Title level={3}>Stock Orders</Title>
-        <Tooltip title="Add Delivery Order">
+        <Tooltip title="Add Stock Item">
           <Button type="primary" shape="circle" icon={<PlusCircleOutlined />} onClick={() => { setOpen(true) }} />
         </Tooltip>
       </CustomRow>
