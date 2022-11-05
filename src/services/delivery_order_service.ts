@@ -53,8 +53,8 @@ const createDeliveryItem = async (deliveryOrder: DeliveryOrderModel) => {
       },
    ).then(result => {
       NotificationService.openNotification("Success","Delivery Item Created Successfuly")
-      return result.status 
-      console.log(result.data);
+      return result.status
+      //console.log(result.data)
    }).catch(err => console.log(err));
    // console.log("order created")
 
