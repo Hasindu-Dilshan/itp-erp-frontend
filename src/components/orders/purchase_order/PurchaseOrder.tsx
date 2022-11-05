@@ -19,6 +19,8 @@ const { Title } = Typography;
 
 
 const PurchaseOrder = () => {
+  const [open, setOpen] = useState(false);
+
   const [purchaseOrders, setPurchaseOrders] = useState<PhurchaseOrderModel[]>([]);
   const [selectedPurchaseOrder, setSelectedPurchaseOrder] = useState<PhurchaseOrderModel>();
   const [isEditModalOpen, setIsEditaModalOpen] = useState<boolean>(false);
@@ -31,6 +33,16 @@ const PurchaseOrder = () => {
     setIsAddPurchaseOrderOpen(!openAddCuastomerModal);
 
   }
+  const handleOk = async() => {
+    await refresher();
+    setOpen(false)
+  };
+
+  const handleCancel = () => {
+    console.log('Clicked cancel button');
+    setOpen(false);
+  };
+
 
   const closeAddPurchaseOrder = async () => {
     await refresher();
@@ -55,22 +67,34 @@ const PurchaseOrder = () => {
     {
       title: "Purchase Date",
       dataIndex: "purchaseOrderDate",
-      key: "purchase-date"
+      key: "purchase-date",
+      render: (_, record: PhurchaseOrderModel) => {
+        return <div>{record.purchaseOrderDate.toString().split("T")[0]}</div>
+      }
     },
     {
       title: "Supplier Name",
       dataIndex: "suppierName",
-      key: "nic"
+      key: "nic",
+      render: (_, record: PhurchaseOrderModel) => {
+        return <div>{record.suppierName.toString().split("T")[0]}</div>
+      }
     },
     {
       title: "Store",
       dataIndex: "store",
-      key: "store"
+      key: "store",
+      render: (_, record: PhurchaseOrderModel) => {
+        return <div>{record.store.toString().split("T")[0]}</div>
+      }
     },
     {
       title: "Net Amount",
       dataIndex: "netAmount",
-      key: "netAmount"
+      key: "netAmount",
+      render: (_, record: PhurchaseOrderModel) => {
+        return <div>{record.netAmount.toString().split("T")[0]}</div>
+      }
     },
 
     {
@@ -131,7 +155,8 @@ const PurchaseOrder = () => {
         </Tooltip>
       </CustomRow>
       <Table columns={columns} className="table" dataSource={purchaseOrders} />
-      <AddPurchaseOrder handleOk={openAddCuastomerModal} handleCancel={closeAddPurchaseOrder} shouldOpen={isAddPurchaseOrderOpen} />
+      <AddPurchaseOrder 
+      handleOk={openAddCuastomerModal} handleCancel={closeAddPurchaseOrder} shouldOpen={isAddPurchaseOrderOpen} />
       <AddPurchaseOrder handleOk={async () => { await refresher(); setIsEditaModalOpen(false); }} handleCancel={() => { setIsEditaModalOpen(false); }} shouldOpen={isEditModalOpen} order={selectedPurchaseOrder} />
       <DeleteModal text='Delete purchase order' isModalOpen={isDeleteModalOpen} handleCancel={() => { setDeleteAddModalOpen(false) }} handleOk={deletePurchaseOrder} />
     </WrapperContainer>

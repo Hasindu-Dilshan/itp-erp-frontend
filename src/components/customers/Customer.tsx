@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import { useReactToPrint } from 'react-to-print';
+import React, { useEffect, useState, useRef } from 'react'
 import { PlusCircleOutlined } from '@ant-design/icons';
 import CustomRow from '../common/Row';
 import WrapperContainer from '../common/WrapperContainer'
@@ -8,8 +9,10 @@ import Table, { ColumnsType } from 'antd/lib/table';
 import { CustomeModel } from '../../models/customer_model';
 import AddCustomerModal from './AddCustomerModal';
 import CustomerService from '../../services/customer_service';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, VerticalAlignBottomOutlined } from '@ant-design/icons';
 import DeleteModal from '../common/DeleteModal';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 const { Title } = Typography;
 
@@ -21,7 +24,7 @@ const Customer = () => {
   const [selectedCustomer, setSelectedCustomer] = useState<CustomeModel>();
   const [isEditModalOpen, setIsEditaModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setDeleteAddModalOpen] = useState<boolean>(false);
-
+  const componentRef = useRef<any>();
 
 
   const [isAddCustomerOpen, setIsAddCustomerOpen] = useState<boolean>(false);
@@ -41,6 +44,31 @@ const Customer = () => {
     setIsAddCustomerOpen(false);
   }
 
+
+
+
+  const generatePdf = () => {
+    const doc = new jsPDF()
+    autoTable(doc, {
+      columns: [
+        { header: 'Name', dataKey: 'name' },
+        { header: 'Nic', dataKey: 'nic' },
+        { header: 'Mobile', dataKey: 'mobile' },
+        { header: 'Email', dataKey: 'email' },
+        { header: 'Address', dataKey: 'address' },
+      ],
+      body: customers.map(customer => {
+        return {
+          name: customer.name,
+          nic: customer.nic,
+          mobile: customer.mobile,
+          email: customer.email,
+          address: customer.address,
+        };
+      })
+    })
+    doc.save('table.pdf')
+  }
 
 
   const columns: ColumnsType<CustomeModel> = [
@@ -113,12 +141,12 @@ const Customer = () => {
     },
   ]
 
-  const deleteCustomer  = async()=>{
+  const deleteCustomer = async () => {
 
     await CustomerService.deleteCustomer(selectedCustomer?._id!)
     await refresher()
     setDeleteAddModalOpen(false);
-}
+  }
 
 
   const refresher = async () => {
@@ -142,10 +170,10 @@ const Customer = () => {
         </Tooltip>
       </CustomRow>
       <Table columns={columns} className="table" dataSource={customers} />
-      <AddCustomerModal handleOk={async()=>{await refresher(); setIsAddCustomerOpen(false); }} handleCancel={closeAddCustomerModal} isOpen={isAddCustomerOpen} />
+      <AddCustomerModal handleOk={async () => { await refresher(); setIsAddCustomerOpen(false); }} handleCancel={closeAddCustomerModal} isOpen={isAddCustomerOpen} />
       <AddCustomerModal handleOk={async () => { await refresher(); setIsEditaModalOpen(false); }} handleCancel={() => { setIsEditaModalOpen(false); }} isOpen={isEditModalOpen} customer={selectedCustomer} />
-      <DeleteModal isModalOpen={isDeleteModalOpen} handleCancel={()=>{setDeleteAddModalOpen(false)}} handleOk={deleteCustomer} text="Do you want t delete this customer ?" />  
- </WrapperContainer>
+      <DeleteModal isModalOpen={isDeleteModalOpen} handleCancel={() => { setDeleteAddModalOpen(false) }} handleOk={deleteCustomer} text="Do you want t delete this customer ?" />
+    </WrapperContainer>
   )
 }
 

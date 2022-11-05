@@ -4,6 +4,8 @@ import { ItemModel } from '../../models/item_model'
 import ItemService from '../../services/item_service'
 import numberValidator from '../common/number_validator'
 import stringValidator from '../common/validation_helper'
+import LogRocket from 'logrocket';
+LogRocket.init('yjover/erp');
 
 interface Props {
    isOpen: boolean,
