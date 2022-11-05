@@ -41,7 +41,7 @@ const Dashboard = () => {
         getItem('Delivery Order', 2),
         getItem('Sales Order', 3),
         getItem('Purchase Order', 4),
-        getItem('Purchase Request', 5),
+        // getItem('Purchase Request', 5),
         getItem('Items', 6),
         getItem('Users', 7,),
         getItem('Stock Orders   ', 8,),

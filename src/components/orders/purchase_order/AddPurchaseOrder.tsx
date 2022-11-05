@@ -177,7 +177,7 @@ const AddPurchaseOrder = ({ shouldOpen, handleOk, handleCancel, order }: Props) 
                   </Form.Item>
                </Col>
                <Col span={2} />
-               <Col span={11}>
+               {/* <Col span={11}>
                   <Form.Item
                      name="total-bill"
                      label="Net Amount"
@@ -186,7 +186,7 @@ const AddPurchaseOrder = ({ shouldOpen, handleOk, handleCancel, order }: Props) 
                   >
                      <Input value={totalBill} onChange={(val) => { setTotalBill(parseFloat(val.target.value)) }} />
                   </Form.Item>
-               </Col>
+               </Col> */}
 
             </Row>
             {!order && <Button onClick={() => { openCloseAddItemModal() }} shape="circle" icon={<PlusCircleOutlined />} />}

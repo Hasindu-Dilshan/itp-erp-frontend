@@ -175,7 +175,7 @@ const PurchaseOrder = () => {
   return (
     <WrapperContainer>
       <CustomRow>
-        <Title level={3}>PurchaseOrders</Title>
+        <Title level={3}>Purchase Orders</Title>
         <div>
           <Button style={{margin:"0 16px"}} onClick={generatePdf} shape="circle" icon={<DownloadOutlined/>} type="primary"/>
         <Tooltip title="Add Purchase Order">
