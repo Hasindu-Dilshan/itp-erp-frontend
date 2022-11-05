@@ -16,7 +16,7 @@ const getOrderQty = async (offset: number, pagination: number): Promise<StockOrd
 }
 
 const updateOrderQty = async (id: string, item: StockOrderModel) => {
- await  put(url + "/stock-order-controller" + { id },
+ await  put(`${url}/stock-order-controller/${id}`,
       {
         name: item.name,
         price: item.price,

@@ -50,30 +50,33 @@ const CreateStockModal = ({ shouldOpen, handleOk, handleCancel, order }: Props) 
 
 
   const createStockOrder = async () => {
-    console.log(manufacturer)
-    const o: StockOrderModel = {
-      name: name,
-      orderqty: orderQty,
-      price: price,
-      manufacturer: manufacturer,
-      companyId: "1"
-    }
-    if (order) {
-      if (order._id) {
-        await StockOrderService.updateOrderQty(order._id, o);
+    if (name !== "") {
+      console.log(orderQty)
+      console.log(manufacturer)
+      const o: StockOrderModel = {
+        name: name,
+        orderqty: orderQty,
+        price: price,
+        manufacturer: manufacturer,
+        companyId: "1"
       }
+      if (order) {
+        if (order._id) {
+          await StockOrderService.updateOrderQty(order._id, o);
+        }
 
-    } else {
-      await StockOrderService.createStockQty(o)
+      } else {
+        await StockOrderService.createStockQty(o)
+      }
+      handleOk();
     }
-    handleOk();
   }
-const data= {
- itemName: order?.name? order?.name : "",
-          itemManufacturer: manufacturer,
-          itemPrice: price,
-          itemQuantity: orderQty
-}
+  const data = {
+    itemName: order?.name ? order?.name : "",
+    itemManufacturer: manufacturer,
+    itemPrice: price,
+    itemQuantity: orderQty
+  }
 
   return (
     <Modal
@@ -89,7 +92,7 @@ const data= {
         layout='vertical'
         autoComplete="false"
         initialValues={
-         data
+          data
         }
       >
         <Row>
@@ -138,7 +141,7 @@ const data= {
               label="Manufafturer"
               name="itemManufacturer"
               initialValue={
-                manufacturer
+                order?.manufacturer
               }
             >
               <Input value={manufacturer} onChange={(val) => { setManufacturer(val.target.value) }}
@@ -153,7 +156,7 @@ const data= {
               label="Price"
               name={"itemPrice"}
               initialValue={
-                price
+                order?.price
               }
               rules={numberValidator("Please enter valid item price")}
             >
@@ -172,8 +175,9 @@ const data= {
               label="Quantity"
               name={"itemQuantity"}
               rules={numberValidator("Please enter valid item quantity")}
+             // initialValue={data?.itemQuantity}
             >
-              <Input onChange={(val) => { setOrderQty(parseInt(val.target.value)) }} />
+              <Input  value={orderQty} onChange={(val) => { setOrderQty(parseInt(val.target.value));console.log(orderQty) }} />
             </Form.Item>
           </Col>
         </Row>

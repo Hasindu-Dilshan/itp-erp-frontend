@@ -1,9 +1,8 @@
-export interface PhurchaseRequest {
-  _id: string,
-  date: Date,
-  transactionDate: Date,
-  transactionType: string,
-  shippingAddress: string,
-  status: number,
-  companyId: string,
+export interface PhurchaseRequestModel {
+  _id?: string,
+  requestBy: string,
+  totalBill: number,
+  status: boolean,
+  requestTo: string,
+  requestToId: string,
 }
