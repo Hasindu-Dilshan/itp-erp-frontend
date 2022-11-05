@@ -2,7 +2,7 @@
 import http, { post, put } from "../http-common"
 import { DeliveryOrderModel } from "../models/delivery_order_model"
 import companyId from "../config"
-const url = "http://127.0.0.1:8090";
+const url = "http://127.0.0.1:8080";
 
 
 const getDeliveryItems = async (offset: number, pagination: number): Promise<DeliveryOrderModel[]> => {
@@ -16,8 +16,8 @@ const getDeliveryItems = async (offset: number, pagination: number): Promise<Del
 
 }
 
-const updateDeliverItem = (id: number, deliveryOrder: DeliveryOrderModel) => {
-   put(url + "/update-delivery-order/" + { id },
+const updateDeliverItem = async (id: string, deliveryOrder: DeliveryOrderModel) => {
+   await put(url + `/delivery-order/update-delivery-order/${id}`,
       {
          date: deliveryOrder.date,
          transactionDate: deliveryOrder.transactionDate,

@@ -4,7 +4,7 @@ import WrapperCard from '../../common/WrapperCard'
 import CustomRow from '../../common/Row'
 import AddButton from '../../common/AddButton'
 import { SalesOderModel } from '../../../models/sales_order_model'
-import { Button, Space, Table } from 'antd'
+import { Button, Select, Space, Table } from 'antd'
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import { ColumnsType } from 'antd/lib/table'
 import AddSalesOrderModal from './AddSalesOrderModal'
@@ -39,11 +39,7 @@ const SalesOrder = () => {
   }
 
   const columns: ColumnsType<SalesOderModel> = [
-    {
-      title: "Order ID",
-      dataIndex: "_id",
-      key: "id",
-    },
+
     {
       title: "Placed Date",
       key: "placed-date",
@@ -79,7 +75,31 @@ const SalesOrder = () => {
       title: "Order Status",
       key: "status",
       render: (_, record: SalesOderModel) => {
-        return <p>{record.status === 0 ? "Not Completed" : "Completed"}</p>
+        return <Select
+          defaultValue={record.status}
+          onChange={async (val: number) => {
+
+            const s: SalesOderModel = {
+              _id: record._id,
+              date: record.date,
+              transactionDate: record.transactionDate,
+              transactionType: record.transactionType,
+              coustomer: record.coustomer,
+              shippingAddress: record.shippingAddress,
+              totalBill: record.totalBill,
+              status: val,
+              companyId: record.companyId,
+              itemId: record.itemId,
+              itemName: record.itemName,
+            };
+            await SalesOrderService.updateDeliverItem(record._id!, s);
+            refresher();
+
+          }}
+        >
+          <Select.Option value={1}>  Completed </Select.Option>
+          <Select.Option value={0}> Not Completed </Select.Option>
+        </Select>
       }
     },
     {
@@ -126,7 +146,7 @@ const SalesOrder = () => {
         <Table dataSource={salesOrders} columns={columns} style={{ width: "100%", height: "100%" }} />
       </WrapperCard>
       <AddSalesOrderModal handleOk={addOrder} handleCancel={cancelOrder} isOpen={openAddOrderModal} />
-      <AddSalesOrderModal handleOk={addOrder} handleCancel={()=>{setOpenEditOrderModal(false)}} isOpen={openEditOrderModal} order={selectedSalesItem} />
+      <AddSalesOrderModal handleOk={addOrder} handleCancel={() => { setOpenEditOrderModal(false) }} isOpen={openEditOrderModal} order={selectedSalesItem} />
       <DeleteModal isModalOpen={deleteModalOpen} handleOk={deleteSalesOrder} handleCancel={() => { setDeleteModalOpen(false) }} text={"Delete delivery order"} />
     </WrapperContainer>
   )

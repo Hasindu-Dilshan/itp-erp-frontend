@@ -1,13 +1,14 @@
 import { MouseEvent, useEffect, useState } from 'react'
-import { DatePicker, Form, Modal, Col, Row, Input, Button, Table, Dropdown, Menu, Space, } from 'antd';
-import { DeliveryOrderModel } from "../../../models/delivery_order_model"
+import { Form, Modal, Col, Row, Input, Button, Table, Dropdown, Menu, Space, } from 'antd';
 import stringValidator from "../../common/validation_helper"
-import DeliveryOrderService from '../../../services/delivery_order_service';
+
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { ColumnsType } from 'antd/lib/table'
 import { ItemModel } from '../../purchase_request/item_model';
 import { DownOutlined } from '@ant-design/icons';
 import { PhurchaseOrderModel } from '../../../models/purchase_order';
+import PurchaseOrderService from '../../../services/purchase_service';
+import numberValidator from '../../common/number_validator';
 interface Props {
    shouldOpen: boolean,
    handleOk: () => void,
@@ -40,10 +41,12 @@ const columns: ColumnsType<ItemModel> = [
 
 ]
 const AddPurchaseOrder = ({ shouldOpen, handleOk, handleCancel, order }: Props) => {
-   const [transactionDate, setTransactionDate] = useState("2022-10-12");
-   const [deliveryDate, setDeliveryDate] = useState("2022-10-15");
-   const [customersName, setCustomersName] = useState<string>("");
-   const [address, setAddress] = useState<string>("");
+   const [supplierName, setSuppliersName] = useState<string>("")
+   const [store, setStore] = useState<string>("")
+
+
+
+
    const [isOpen, setIsOpen] = useState(false)
    const [selectedItems, setSelectedItems] = useState<ItemModel[]>([])
    const [selectedIemName, setSelectedItemName] = useState("")
@@ -51,28 +54,31 @@ const AddPurchaseOrder = ({ shouldOpen, handleOk, handleCancel, order }: Props) 
    const [selectedItemUnitPrice, setSelectedItemUnitPrice] = useState("")
    const [totalBill, setTotalBill] = useState<number>(0)
 
-   const createDeliveryOrder = (e: MouseEvent<HTMLElement, globalThis.MouseEvent>) => {
+   const createPurchaseOrder = async () => {
+      if (supplierName || store) {
+         const o: PhurchaseOrderModel = ({
+            purchaseOrderDate: new Date(),
+            suppierName: supplierName,
+            store: store,
+            netAmount: totalBill,
+            status: false,
+            companyId: "1",
+         });
+         if (order) {
+            await PurchaseOrderService.updatePurchaseOrder(order._id!,o)
+         } else {
 
 
-      const order: DeliveryOrderModel = ({
-         date: new Date(deliveryDate),
-         transactionDate: new Date(transactionDate),
-         transactionType: "asd",
-         coustomer: customersName,
-         shippingAddress: address,
-         companyId: "1",
-         totalBill: totalBill,
-         status: 0,
-      });
-
-      DeliveryOrderService.createDeliveryItem(order).then((val) => {
+            await PurchaseOrderService.createDeliveryItem(o).then((val) => {
 
 
-      }).catch(err=>console.log(`create delivery order failed ${err}`));
+            }).catch(err => console.log(`create delivery order failed ${err}`));
+         }
 
 
+         handleOk();
+      }
 
-      handleOk();
    }
 
 
@@ -125,102 +131,72 @@ const AddPurchaseOrder = ({ shouldOpen, handleOk, handleCancel, order }: Props) 
 
    useEffect(() => {
       if (order) {
-         // console.log("called");
-         // setTransactionDate(order.transactionDate.toLocaleDateString());
-         // setDeliveryDate(order.date.toLocaleDateString());
-         // setTotalBill(order.totalBill);
-         // setCustomersName(order.coustomer);
-         // setAddress(order.shippingAddress);
 
+         setSuppliersName(order.suppierName)
+         setStore(order.store)
+         setTotalBill(order.netAmount)
 
       }
    }, [selectedItems, order])
 
    return (
       <Modal
-         title="Create Delivery Order"
+         title={order ? "Edit Order" : "Create Delivery Order"}
          open={shouldOpen}
-         onOk={createDeliveryOrder}
          onCancel={handleCancel}
          width={1000}
          footer={null}
       >
          <Form
             layout="vertical"
-
+           
+            autoComplete="off"
          >
-            <Row>
-               <Col span={12}>
-                  <Form.Item
-                     name="transaction-date"
-                     label="Transaction Date"
-                    
-                  >
-                     <DatePicker onChange={(val) => {
-                        if (val) {
-                           var month: number = val.month() + 1;
-                           var day: number = val.date();
-                           var year: number = val.year();
-
-                           setTransactionDate(`${year}-${month}-${day}`)
-                        }
-                     }} />
-                  </Form.Item>
-               </Col>
-               <Col span={12} style={{ display: "flex", flexDirection: "column" }}>
-                  <Form.Item
-                     name="delivery-date"
-                     label="Delivery Date"
-                    
-                  >
-                     <DatePicker
-                        onChange={(val) => {
-                           if (val) {
-                              var month: number = val.month() + 1;
-                              var day: number = val.date();
-                              var year: number = val.year();
-
-                              setDeliveryDate(`${year}-${month}-${day}`)
-
-                           }
-                        }}
-                     />
-                  </Form.Item>
-               </Col>
-
-            </Row>
             <Row>
                <Col span={24}>
                   <Form.Item
                      name="name"
-                     label="Customers Name"
+                     label="Suppier Name"
                      rules={stringValidator("Customer Name is required")}
+                     initialValue={order?.suppierName}
                   >
-                     <Input onChange={(val) => { setCustomersName(val.target.value) }} value="{customersName}" />
+                     <Input value={order?.suppierName} onChange={(val) => { setSuppliersName(val.target.value) }} />
                   </Form.Item>
                </Col>
 
             </Row>
             <Row>
-               <Col span={24}>
+               <Col span={11}>
                   <Form.Item
-                     name="address"
-                     label="Address"
-                     rules={stringValidator("Customer Address is required")}
+                     name="store"
+                     label="Store"
+                     rules={stringValidator("Store is required")}
+                     initialValue={order?.store}
                   >
-                     <Input.TextArea value={address} rows={3} onChange={(val) => { setAddress(val.target.value) }} />
+                     <Input value={store} onChange={(val) => { setStore(val.target.value) }} />
+                  </Form.Item>
+               </Col>
+               <Col span={2} />
+               <Col span={11}>
+                  <Form.Item
+                     name="total-bill"
+                     label="Net Amount"
+                     rules={numberValidator("Net Amount is required")}
+                     initialValue={order?.netAmount}
+                  >
+                     <Input value={totalBill} onChange={(val) => { setTotalBill(parseFloat(val.target.value)) }} />
                   </Form.Item>
                </Col>
 
             </Row>
-            <Button onClick={() => { openCloseAddItemModal() }} shape="circle" icon={<PlusCircleOutlined />} />
+            {!order && <Button onClick={() => { openCloseAddItemModal() }} shape="circle" icon={<PlusCircleOutlined />} />}
 
-            <Table columns={columns} className="table" dataSource={selectedItems} />
-            <h1> Total Bill : {totalBill}</h1>
+            {!order && <Table columns={columns} className="table" dataSource={selectedItems} />}
+            {!order && <h1> Total Bill : {totalBill}</h1>}
             <Row>
                <Col span={19} />
                <Col span={4}>
-                  <Button type='primary' htmlType='submit' onClick={createDeliveryOrder} style={{ width: "100%" }}>Create Order</Button>
+                  <Button type='primary' htmlType='submit' onClick={()=>{createPurchaseOrder();}} style={{ width: "100%" }}>{order ? "Edit Order" : "Create Order"}</Button>
                </Col>
             </Row>
          </Form>
@@ -232,7 +208,7 @@ const AddPurchaseOrder = ({ shouldOpen, handleOk, handleCancel, order }: Props) 
                   <Col span={8}><Dropdown overlay={menu} placement="bottom" arrow={{ pointAtCenter: true }}>
                      <Button>
                         <Space>
-                           Item Name
+                           {selectedIemName ?? "Item Name"}
                            <DownOutlined />
                         </Space>
                      </Button>

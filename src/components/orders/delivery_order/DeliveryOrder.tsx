@@ -27,7 +27,7 @@ const DeliveryOrder = () => {
 
   const openCloseEditModal = async () => {
     await refresher();
-    setIsEditModalOpen(!isEditModalOpen);
+    setIsEditModalOpen(false);
   }
 
   const handleOk = async() => {
@@ -41,11 +41,11 @@ const DeliveryOrder = () => {
   };
 
   const columns: ColumnsType<DeliveryOrderModel> = [
-    {
-      title: "Order ID",
-      dataIndex: "_id",
-      key: "id",
-    },
+    // {
+    //   title: "Order ID",
+    //   dataIndex: "_id",
+    //   key: "id",
+    // },
     {
       title: "Placed Date",
       key: "placed-date",

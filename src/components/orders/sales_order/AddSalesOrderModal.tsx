@@ -20,7 +20,7 @@ const items: ItemModel[] = [
       name: "Casset",
       price: 150,
       inStock: true,
-      manufacturedBy: "Abans",
+      manufacturer: "Abans",
       supplier: "KM Karunaranthna",
       companyId: "1",
    },
@@ -29,7 +29,7 @@ const items: ItemModel[] = [
       name: "Radio",
       price: 150,
       inStock: true,
-      manufacturedBy: "Abans",
+      manufacturer: "Abans",
       supplier: "KM Karunaranthna",
       companyId: "1"
    },
@@ -38,7 +38,7 @@ const items: ItemModel[] = [
       name: "Tv",
       price: 150,
       inStock: true,
-      manufacturedBy: "Aban",
+      manufacturer: "Aban",
       supplier: "KM Karunaranthna",
       companyId: "1",
    },
@@ -57,25 +57,49 @@ const AddSalesOrderModal = ({ isOpen, handleCancel, handleOk, order }: Props) =>
 
 
    const createOrder = async () => {
-      if (selectedItem) {
-         const order: SalesOderModel = {
-            date: date,
-            transactionDate: transactionDate,
+      if (order) {
+         console.log("===> " + order._id)
+         const o: SalesOderModel = {
+            date: order.date,
+            transactionDate: order.transactionDate,
             transactionType: "tra",
             coustomer: customerName,
             shippingAddress: address,
-            totalBill,
+            totalBill: order.totalBill,
             status: 1.,
             companyId: "1",
-            itemId: selectedItem._id,
-            itemName: itemName,
+            itemId: order.itemId,
+            itemName: order.itemName,
          }
-         await SalesOrderService.createSalesItem(order)
-            .then((val) => { })
+         await SalesOrderService.updateDeliverItem(order._id!, o)
+            .then((val) => {
+               handleOk();
+            })
             .catch(err => console.log(`creae sales order failed ${err}`))
+      } else {
+         if (selectedItem) {
+
+            const order: SalesOderModel = {
+               date: date,
+               transactionDate: transactionDate,
+               transactionType: "tra",
+               coustomer: customerName,
+               shippingAddress: address,
+               totalBill,
+               status: 1.,
+               companyId: "1",
+               itemId: selectedItem._id,
+               itemName: itemName,
+            }
+            await SalesOrderService.createSalesItem(order)
+               .then((val) => {
+                  handleOk();
+               })
+               .catch(err => console.log(`creae sales order failed ${err}`))
+         }
+
       }
 
-      handleOk();
    }
 
 
@@ -89,20 +113,27 @@ const AddSalesOrderModal = ({ isOpen, handleCancel, handleOk, order }: Props) =>
    }, [order])
 
 
+   const data = {
+      customerName: order?.coustomer,
+      address: order?.shippingAddress,
+   }
+
+
    return (
       <Modal
          open={isOpen}
          onCancel={handleCancel}
          onOk={createOrder}
          width={1000}
-         title="Add sales order"
+         title={order ? "Edit sales order" : "Add sales order"}
          footer={null}
       >
          <Form
             layout='vertical'
             autoComplete="false"
+            initialValues={data}
          >
-            <Row>
+            {!order && <Row>
                <Col span={10}>
                   <Form.Item
                      name={"order-date"}
@@ -140,13 +171,14 @@ const AddSalesOrderModal = ({ isOpen, handleCancel, handleOk, order }: Props) =>
                      />
                   </Form.Item>
                </Col>
-            </Row>
+            </Row>}
             <Row>
                <Col span={24}>
                   <Form.Item
                      name={"customer-name"}
                      label="Customers Name"
                      rules={stringValidator("Enter customer name")}
+                     initialValue={data.customerName}
                   >
                      <Input placeholder='Enter here'
                         value={customerName}
@@ -165,6 +197,7 @@ const AddSalesOrderModal = ({ isOpen, handleCancel, handleOk, order }: Props) =>
                      name={"customer-address"}
                      label="Shipping Address"
                      rules={stringValidator("Enter customer address")}
+                     initialValue={data.address}
                   >
                      <Input.TextArea placeholder='Enter here'
                         onChange={(val) => {
@@ -176,7 +209,7 @@ const AddSalesOrderModal = ({ isOpen, handleCancel, handleOk, order }: Props) =>
                   </Form.Item>
                </Col>
             </Row>
-            <Row>
+            {!order && <Row>
                <Col span={10}>
                   <Form.Item
                      name={"item-name"}
@@ -209,6 +242,7 @@ const AddSalesOrderModal = ({ isOpen, handleCancel, handleOk, order }: Props) =>
                   <Form.Item
                      name={"item-datequantity"}
                      label="Item Quantity"
+
                      rules={numberValidator("Please enter valid quantity")}
                   >
                      <Input
@@ -225,16 +259,16 @@ const AddSalesOrderModal = ({ isOpen, handleCancel, handleOk, order }: Props) =>
                      />
                   </Form.Item>
                </Col>
-            </Row>
+            </Row>}
             <Row>
                <Col span={12}>
-                  <h3>Total Bill : {totalBill}</h3>
+                  {!order && <h3>Total Bill : {totalBill}</h3>}
                </Col>
                <Col span={7} />
                <Col span={5}>
                   <Button type='primary' htmlType='submit' style={{ width: "100%" }}
                      onClick={() => { createOrder(); }}
-                  >Create Order</Button>
+                  >{order ? "Edit Order" : "Create Order"}</Button>
                </Col>
             </Row>
          </Form>

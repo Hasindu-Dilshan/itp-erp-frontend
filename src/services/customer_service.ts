@@ -2,7 +2,7 @@
 import http, { post, put } from "../http-common"
 import { CustomeModel } from "../models/customer_model"
 import companyId from "../config"
-const url = "http://127.0.0.1:8090";
+const url = "http://127.0.0.1:8080";
 
 
 const getCustomers = async (offset: number, pagination: number): Promise<CustomeModel[]> => {
@@ -16,8 +16,8 @@ const getCustomers = async (offset: number, pagination: number): Promise<Custome
 
 }
 
-const updateCustomer = (id: number, Customer: CustomeModel) => {
-   put(url + "/update-customer/" + { id },
+const updateCustomer = async(id: string, Customer: CustomeModel) => {
+  await put(url + `/customer/update-customer/${id}`,
       {
          date: Customer.date,
          name: Customer.name,

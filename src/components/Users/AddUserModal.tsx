@@ -1,6 +1,7 @@
 import { Button, Col, Form, Input, Modal, Row, Select } from 'antd';
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { EmployeeModel } from '../../models/employee_model'
+import EmployeeService from '../../services/employee_service';
 import numberValidator from '../common/number_validator';
 import stringValidator from '../common/validation_helper';
 
@@ -30,6 +31,46 @@ const AddUserModal = ({ isOpen, handleCancel, handleOk, employee }: Props) => {
    const [age, setAge] = useState<number>(0);
    const [salary, setSalary] = useState<number>(0);
 
+
+   const createEmployee = async () => {
+      if (name !== "" && nic !== "" && address !== "" && role !== "" && age !== 0 && salary !== 0 && contactNumber !== "") {
+         const e: EmployeeModel = {
+            name: name,
+            nic: nic,
+            address: address,
+            contactNumber: contactNumber,
+            role: role,
+            age: age,
+            salary: salary,
+         }
+         if (employee) {
+            await EmployeeService.updateEmployee(employee._id!, e)
+               .catch(err => console.log(`update employee failed ${err}`))
+         } else {
+            await EmployeeService.createEmployee(e)
+               .catch(err => console.log(`create employee failed ${err}`))
+         }
+         handleOk();
+      }
+   }
+
+
+
+   useEffect(() => {
+      if (employee) {
+         setAddress(employee.address)
+         setName(employee.name)
+         setContactNumber(employee.contactNumber);
+         setAge(employee.age)
+         setRole(employee.role)
+         setSalary(employee.salary)
+         setNic(employee.nic)
+      }
+      console.log(employee)
+   }, [employee])
+
+
+
    return (
       <Modal
          open={isOpen}
@@ -42,14 +83,26 @@ const AddUserModal = ({ isOpen, handleCancel, handleOk, employee }: Props) => {
          <Form
             layout='vertical'
             autoComplete="false"
+            initialValues={{
+               emplyeeName: employee?.name
+            }}
+            onFinish={() => {
+               setName("");
+               setNic("")
+               setAddress("")
+               setContactNumber("")
+            }}
          >
 
             <Row>
                <Col span={24}>
                   <Form.Item
-                     name={"employee-name"}
+                     name={"emplyeeName"}
                      label="Employees Name"
                      rules={stringValidator("Enter employee name")}
+                     initialValue={
+                        name
+                     }
                   >
                      <Input placeholder='Enter here'
                         onChange={(val) => {
@@ -67,8 +120,14 @@ const AddUserModal = ({ isOpen, handleCancel, handleOk, employee }: Props) => {
                      name={"employee-nic"}
                      label="Employee NIC"
                      rules={stringValidator("Enter employee nic")}
+                     initialValue={
+                        employee?.nic
+                     }
                   >
-                     <Input placeholder='Enter here'
+                     <Input
+                        maxLength={12}
+                        value={nic}
+                        placeholder='Enter here'
                         onChange={(val) => {
                            if (val) {
                               setNic(val.target.value);
@@ -84,8 +143,13 @@ const AddUserModal = ({ isOpen, handleCancel, handleOk, employee }: Props) => {
                      name={"employee-address"}
                      label="Employee Address"
                      rules={stringValidator("Enter employee address")}
+                     initialValue={
+                        employee?.address
+                     }
                   >
-                     <Input.TextArea placeholder='Enter here'
+                     <Input.TextArea
+                        value={address}
+                        placeholder='Enter here'
                         onChange={(val) => {
                            if (val) {
                               setAddress(val.target.value);
@@ -100,9 +164,15 @@ const AddUserModal = ({ isOpen, handleCancel, handleOk, employee }: Props) => {
                   <Form.Item
                      name={"Role"}
                      label="Role"
+
                      rules={stringValidator("Enter valid role")}
+                     initialValue={
+                        employee?.role
+                     }
                   >
-                     <Select placeholder="select item"
+                     <Select
+                        defaultValue={employee?.role}
+                        placeholder="select item"
                         onChange={(val) => {
                            if (val) {
                               setRole(val);
@@ -119,13 +189,19 @@ const AddUserModal = ({ isOpen, handleCancel, handleOk, employee }: Props) => {
                      </Select>
                   </Form.Item>
                </Col>
-               <Col span={2} style = {{margin : "0 8px"}} >
+               <Col span={2} style={{ margin: "0 8px" }} >
                   <Form.Item
                      name={"employee-age"}
                      label="Age"
                      rules={numberValidator("Please enter valid age")}
+                     initialValue={
+                        employee?.age
+                     }
+
                   >
                      <Input
+                        value={age}
+                        maxLength={3}
                         onChange={(val) => {
                            if (val.target.value) {
                               console.log(val.target.value)
@@ -136,13 +212,18 @@ const AddUserModal = ({ isOpen, handleCancel, handleOk, employee }: Props) => {
                      />
                   </Form.Item>
                </Col>
-               <Col span={4} style = {{margin : "0 8px"}} >
+               <Col span={4} style={{ margin: "0 8px" }} >
                   <Form.Item
                      name={"employee-SALARY"}
                      label="Salary"
                      rules={numberValidator("Please enter valid salary")}
+                     initialValue={
+                        employee?.salary
+                     }
                   >
                      <Input
+
+                        value={salary}
                         onChange={(val) => {
                            if (val.target.value) {
                               console.log(val.target.value)
@@ -157,8 +238,13 @@ const AddUserModal = ({ isOpen, handleCancel, handleOk, employee }: Props) => {
                      name={"employee-contactNumber"}
                      label="Contact Number"
                      rules={stringValidator("Please enter valid contact Number")}
+                     initialValue={
+                        employee?.contactNumber
+                     }
                   >
                      <Input
+                        value={contactNumber}
+                        maxLength={11}
                         onChange={(val) => {
                            if (val.target.value) {
                               console.log(val.target.value)
@@ -176,7 +262,7 @@ const AddUserModal = ({ isOpen, handleCancel, handleOk, employee }: Props) => {
                </Col>
                <Col span={7} />
                <Col span={5}>
-                  <Button type='primary' htmlType='submit' style={{ width: "100%" }}>Create User</Button>
+                  <Button type='primary' htmlType='submit' onClick={createEmployee} style={{ width: "100%" }}>{employee ? "Edit Employee" : "Create User"}</Button>
                </Col>
             </Row>
          </Form>

@@ -1,12 +1,14 @@
 import { MouseEvent, useEffect, useState } from 'react'
-import { DatePicker, Form, Modal, Col, Row, Input, Button, Table, Dropdown, Menu, Space, } from 'antd';
+import { DatePicker, Form, Modal, Col, Row, Input, Button, Table, Select, } from 'antd';
 import { DeliveryOrderModel } from "../../../models/delivery_order_model"
 import stringValidator from "../../common/validation_helper"
 import DeliveryOrderService from '../../../services/delivery_order_service';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { ColumnsType } from 'antd/lib/table'
-import { ItemModel } from '../../purchase_request/item_model';
-import { DownOutlined } from '@ant-design/icons';
+import { DeleteOutlined } from '@ant-design/icons';
+
+import ItemService from '../../../services/item_service';
+import { ItemModel } from '../../../models/item_model';
 interface Props {
    shouldOpen: boolean,
    confirmLoading: boolean,
@@ -15,30 +17,6 @@ interface Props {
    deliveryOrder?: DeliveryOrderModel
 }
 
-const columns: ColumnsType<ItemModel> = [
-   // {
-   //    title: "Item ID",
-   //    dataIndex: "id",
-   //    key: "id",
-   // },
-   {
-      title: "Item Name",
-      dataIndex: "name",
-      key: "name",
-   },
-   {
-      title: "Quantity",
-      dataIndex: "quantity",
-      key: "quantity",
-   },
-   {
-      title: "Unit Price",
-      dataIndex: "unitPrice",
-      key: "unitPrice",
-   },
-
-
-]
 
 
 
@@ -51,15 +29,49 @@ const CreateDeliveryOrderModal = ({ shouldOpen, handleOk, handleCancel, confirmL
    const [address, setAddress] = useState<string>("");
    const [isOpen, setIsOpen] = useState(false)
    const [selectedItems, setSelectedItems] = useState<ItemModel[]>([])
-   const [selectedIemName, setSelectedItemName] = useState("")
-   const [selectedIemQuantity, setSelectedItemQuantity] = useState("")
+   const [selectedIem, setSelectedItem] = useState<ItemModel>()
+   const [selectedIemQuantity, setSelectedItemQuantity] = useState<number>(0)
    const [selectedItemUnitPrice, setSelectedItemUnitPrice] = useState("")
    const [totalBill, setTotalBill] = useState<number>(0)
+   const [items, setItems] = useState<ItemModel[]>([])
+
+   const columns: ColumnsType<ItemModel> = [
+      // {
+      //    title: "Item ID",
+      //    dataIndex: "id",
+      //    key: "id",
+      // },
+      {
+         title: "Item Name",
+         dataIndex: "name",
+         key: "name",
+      },
+      {
+         title: "Quantity",
+         dataIndex: "quantity",
+         key: "quantity",
+      },
+      {
+         title: "Unit Price",
+         dataIndex: "price",
+         key: "unitPrice",
+      },
+      // {
+      //    title: "",
+      //    key: "actions",
+
+      //    render: (_, record: ItemModel) => {
+      //       return <Button onClick={() => { removeItem(record) }} icon={<DeleteOutlined />} />
+      //    }
+      // }
+
+   ]
+
 
    const createDeliveryOrder = (e: MouseEvent<HTMLElement, globalThis.MouseEvent>) => {
 
 
-      const deliveryOrder: DeliveryOrderModel = ({
+      const d: DeliveryOrderModel = ({
          date: new Date(deliveryDate),
          transactionDate: new Date(transactionDate),
          transactionType: "asd",
@@ -70,63 +82,59 @@ const CreateDeliveryOrderModal = ({ shouldOpen, handleOk, handleCancel, confirmL
          status: 0,
       });
 
-      DeliveryOrderService.createDeliveryItem(deliveryOrder).then((val) => {
+      if (deliveryOrder) {
+         DeliveryOrderService.updateDeliverItem(deliveryOrder._id!, d).then((val) => {
+            handleOk();
+         }).catch(err => console.log(`update delivery order failed ${err}`));
+      } else {
+         DeliveryOrderService.createDeliveryItem(d).then((val) => {
+            handleOk();
+         }).catch(err => console.log(`create delivery order failed ${err}`));
+      }
 
 
-      }).catch(err=>console.log(`create delivery order failed ${err}`));
 
-
-
-      handleOk();
+      // 
    }
 
 
    const addItem = () => {
-      const item: ItemModel = {
-         name: selectedIemName,
-         unitPrice: parseFloat(selectedItemUnitPrice),
-         quantity: parseFloat(selectedIemQuantity),
+      let f: ItemModel[] = selectedItems;
+      if (selectedIem) {
+         const i: ItemModel = {
+            _id: selectedIem._id!,
+            name: selectedIem.name,
+            price: selectedIem.price,
+            inStock: selectedIem.inStock,
+            manufacturer: selectedIem.manufacturer,
+            companyId: selectedIem.companyId,
+            quantity: selectedIemQuantity,
+            supplier: selectedIem.supplier,
+         }
+         f.push(i)
+         setSelectedItems([...f])
+         const tot = selectedIem?.price * selectedIemQuantity;
+         setTotalBill(totalBill + tot)
       }
-      let i: ItemModel[] = selectedItems;
-      i.push(item)
+      setIsOpen(false);
+   }
 
-      let tot: number = totalBill + (item.quantity * item.unitPrice);
-      setTotalBill(tot)
-      setSelectedItems([...i])
-      openCloseAddItemModal();
-
+   const removeItem = (i: ItemModel) => {
+      let is: ItemModel[] = selectedItems;
+      let count: number = 0;
+      selectedItems.forEach(item => {
+         if (item === i) {
+            is.slice(count, 1)
+         }
+         count++
+      })
+      setSelectedItems([...is])
    }
 
    const openCloseAddItemModal = () => {
       setIsOpen(!isOpen)
    }
-   const menu = (
-      <Menu
-         items={[
-            {
-               key: 'Refreregirator',
-               label: "Refreregirator",
-               onClick: (val) => {
-                  setSelectedItemName(val.key);
-               }
-            },
-            {
-               key: 'Television',
-               label: "Television",
-               onClick: (val) => {
-                  setSelectedItemName(val.key);
-               }
-            },
-            {
-               key: 'Washing Machine',
-               label: "Washing Machine",
-               onClick: (val) => {
-                  setSelectedItemName(val.key);
-               }
-            },
-         ]}
-      />
-   );
+
 
    useEffect(() => {
       if (deliveryOrder) {
@@ -136,72 +144,84 @@ const CreateDeliveryOrderModal = ({ shouldOpen, handleOk, handleCancel, confirmL
          setTotalBill(deliveryOrder.totalBill);
          setCustomersName(deliveryOrder.coustomer);
          setAddress(deliveryOrder.shippingAddress);
-
-
       }
-   }, [selectedItems, deliveryOrder])
+
+      ItemService.getDeliveryItems(1, 10).then(res => setItems([...res]))
+   }, [selectedItems, deliveryOrder, setSelectedItems])
+
+
+   const data = {
+      transactionDate: deliveryOrder?.transactionDate ? deliveryOrder?.transactionDate : "",
+      deliveryDate: deliveryOrder?.date ? deliveryOrder.date : "",
+      coustomer: deliveryOrder?.coustomer ? deliveryOrder.coustomer : "",
+      shippingAddress: deliveryOrder?.date ? deliveryOrder.shippingAddress : "",
+      totalBill: deliveryOrder?.totalBill ? deliveryOrder.totalBill : 0
+   }
 
    return (
       <Modal
-         title="Create Delivery Order"
+         title={deliveryOrder ? "Update Delivery Order" : "Create Delivery Order"}
          open={shouldOpen}
-         onOk={createDeliveryOrder}
          onCancel={handleCancel}
          width={1000}
          footer={null}
       >
          <Form
             layout="vertical"
-
+            initialValues={data}
          >
-            <Row>
-               <Col span={12}>
-                  <Form.Item
-                     name="transaction-date"
-                     label="Transaction Date"
-                    
-                  >
-                     <DatePicker onChange={(val) => {
-                        if (val) {
-                           var month: number = val.month() + 1;
-                           var day: number = val.date();
-                           var year: number = val.year();
+            {
+               !deliveryOrder &&
+               <Row>
+                  <Col span={12}>
+                     <Form.Item
+                        name="transaction-date"
+                        label="Transaction Date"
 
-                           setTransactionDate(`${year}-${month}-${day}`)
-                        }
-                     }} />
-                  </Form.Item>
-               </Col>
-               <Col span={12} style={{ display: "flex", flexDirection: "column" }}>
-                  <Form.Item
-                     name="delivery-date"
-                     label="Delivery Date"
-                    
-                  >
-                     <DatePicker
-                        onChange={(val) => {
-                           if (val) {
-                              var month: number = val.month() + 1;
-                              var day: number = val.date();
-                              var year: number = val.year();
+                     >
+                        <DatePicker
+                           onChange={(val) => {
+                              if (val) {
+                                 var month: number = val.month() + 1;
+                                 var day: number = val.date();
+                                 var year: number = val.year();
 
-                              setDeliveryDate(`${year}-${month}-${day}`)
+                                 setTransactionDate(`${year}-${month}-${day}`)
+                              }
+                           }} />
+                     </Form.Item>
+                  </Col>
+                  <Col span={12} style={{ display: "flex", flexDirection: "column" }}>
+                     <Form.Item
+                        name="delivery-date"
+                        label="Delivery Date"
 
-                           }
-                        }}
-                     />
-                  </Form.Item>
-               </Col>
+                     >
+                        <DatePicker
+                           onChange={(val) => {
+                              if (val) {
+                                 var month: number = val.month() + 1;
+                                 var day: number = val.date();
+                                 var year: number = val.year();
 
-            </Row>
+                                 setDeliveryDate(`${year}-${month}-${day}`)
+
+                              }
+                           }}
+                        />
+                     </Form.Item>
+                  </Col>
+
+               </Row>}
             <Row>
                <Col span={24}>
                   <Form.Item
                      name="name"
                      label="Customers Name"
                      rules={stringValidator("Customer Name is required")}
+                     initialValue={data.coustomer}
                   >
-                     <Input onChange={(val) => { setCustomersName(val.target.value) }} value="{customersName}" />
+                     <Input value={customersName} onChange={(val) => { setCustomersName(val.target.value) }} />
                   </Form.Item>
                </Col>
 
@@ -212,20 +232,21 @@ const CreateDeliveryOrderModal = ({ shouldOpen, handleOk, handleCancel, confirmL
                      name="address"
                      label="Address"
                      rules={stringValidator("Customer Address is required")}
+                     initialValue={data.shippingAddress}
                   >
                      <Input.TextArea value={address} rows={3} onChange={(val) => { setAddress(val.target.value) }} />
                   </Form.Item>
                </Col>
 
             </Row>
-            <Button onClick={() => { openCloseAddItemModal() }} shape="circle" icon={<PlusCircleOutlined />} />
+            {!deliveryOrder && <Button onClick={() => { openCloseAddItemModal() }} shape="circle" icon={<PlusCircleOutlined />} />}
 
-            <Table columns={columns} className="table" dataSource={selectedItems} />
-            <h1> Total Bill : {totalBill}</h1>
+            {!deliveryOrder && <Table columns={columns} className="table" dataSource={selectedItems} />}
+            {!deliveryOrder && <h1> Total Bill : {totalBill}</h1>}
             <Row>
                <Col span={19} />
                <Col span={4}>
-                  <Button type='primary' htmlType='submit' onClick={createDeliveryOrder} style={{ width: "100%" }}>Create Order</Button>
+                  <Button type='primary' htmlType='submit' onClick={createDeliveryOrder} style={{ width: "100%" }}>{deliveryOrder ? "Edit Order" : "Create Order"}</Button>
                </Col>
             </Row>
          </Form>
@@ -234,20 +255,38 @@ const CreateDeliveryOrderModal = ({ shouldOpen, handleOk, handleCancel, confirmL
          <Modal title="Add Item" open={isOpen} onOk={() => addItem()} onCancel={() => { openCloseAddItemModal() }}>
             <Form>
                <Row>
-                  <Col span={8}><Dropdown overlay={menu} placement="bottom" arrow={{ pointAtCenter: true }}>
-                     <Button>
-                        <Space>
-                           Item Name
-                           <DownOutlined />
-                        </Space>
-                     </Button>
-                  </Dropdown>
+                  <Col span={7}>
+                     <Select
+                        style={{ width: "100%" }}
+                        onChange={(val) => {
+                           if (val) {
+                              items.forEach(item => {
+                                 if (item.name === val) {
+                                    setSelectedItemUnitPrice(item.price.toString())
+
+                                    setSelectedItem(item)
+                                 }
+                              })
+                           }
+                        }}
+                     >
+                        {
+                           items.map(item => {
+                              return <Select.Option value={item.name} key={item._id}>{item.name}</Select.Option>
+                           })
+                        }
+                     </Select>
                   </Col>
-                  <Col span={8}>
-                     <Input placeholder="Quantity" onChange={(val) => { setSelectedItemQuantity(val.target.value) }} />
+                  <Col span={2} />
+                  <Col span={7}>
+                     <Input placeholder="Quantity" onChange={(val) => { setSelectedItemQuantity(parseInt(val.target.value)) }} />
                   </Col>
                   <Col span={8} style={{ padding: "0px 8px" }}>
-                     <Input placeholder="Unit Price" onChange={(val) => { setSelectedItemUnitPrice(val.target.value) }} />
+                     <Input
+                        value={selectedItemUnitPrice}
+                        placeholder="Unit Price"
+                        onChange={(val) => { setSelectedItemUnitPrice(val.target.value) }}
+                     />
                   </Col>
 
                </Row>

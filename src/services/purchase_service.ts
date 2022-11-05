@@ -2,11 +2,12 @@
 import http, { post, put } from "../http-common"
 import { PhurchaseOrderModel } from "./../models/purchase_order"
 import companyId from "../config"
-const url = "http://127.0.0.1:8090";
+const url = "http://127.0.0.1:8080";
 
 
 const getPurchaseOrders = async (offset: number, pagination: number): Promise<PhurchaseOrderModel[]> => {
    return await http.get(`purchase-order/${companyId.companyId}/${pagination}/${offset}`).then((result) => {
+
       return result.data.orders;
    }).catch(err => {
       console.log(`get purchase orders failed ${err}`);
@@ -16,10 +17,10 @@ const getPurchaseOrders = async (offset: number, pagination: number): Promise<Ph
 
 }
 
-const updatePurchaseOrder = (id: number, purchaseOrder: PhurchaseOrderModel) => {
-   put(url + "/update-purchase-order/" + { id },
+const updatePurchaseOrder = async (id: string, purchaseOrder: PhurchaseOrderModel) => {
+   await put(`${url}/purchase-order/update-purchase-order/${id}`,
       {
-        purchaseOrderDate: purchaseOrder.purchaseOrderDate,
+         purchaseOrderDate: purchaseOrder.purchaseOrderDate,
          suppierName: purchaseOrder.suppierName,
          store: purchaseOrder.store,
          netAmount: purchaseOrder.netAmount,
@@ -30,9 +31,7 @@ const updatePurchaseOrder = (id: number, purchaseOrder: PhurchaseOrderModel) => 
 }
 
 const createDeliveryItem = async (purchaseOrder: PhurchaseOrderModel) => {
-
-
-   post(url + "/purchase-order/create-purchase-order",
+   await post(url + "/purchase-order/create-purchase-order",
       {
          purchaseOrderDate: purchaseOrder.purchaseOrderDate,
          suppierName: purchaseOrder.suppierName,
