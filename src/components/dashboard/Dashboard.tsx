@@ -1,4 +1,5 @@
 import "./styles.css"
+import logo from "../../Assets/Logo.png"
 
 import type { MenuProps } from 'antd';
 import { Layout, Menu } from 'antd';
@@ -66,7 +67,8 @@ const Dashboard = () => {
     return (
         <>
             <Header className="site-layout-background">
-                <Title level={2} type="success">ERP System</Title>
+                <img src={logo} alt="Logo" width={120} />
+                
             </Header>
             <Layout style={{ minHeight: '90vh' }}>
 

@@ -61,7 +61,7 @@ const Customer = () => {
         };
       })
     })
-    doc.save('table.pdf')
+    doc.save('customerDetails.pdf')
   }
 
 
@@ -191,7 +191,9 @@ const Customer = () => {
       <CustomRow>
         <Title level={3}>Customers</Title>
         <div>
-          <Button style={{ margin: "0 16px" }} onClick={generatePdf} shape="circle" icon={<DownloadOutlined />} type="primary" />
+        <Tooltip title="Generate PDF">
+          <Button  style={{margin : "0 16px"}} onClick={generatePdf} shape="circle" icon={<DownloadOutlined />} type="primary" />
+        </Tooltip>
           <Tooltip title="Add Customer">
             <Button type="primary" shape="circle" icon={<PlusCircleOutlined />} onClick={() => { setIsAddCustomerOpen(true) }} />
           </Tooltip>

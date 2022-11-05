@@ -5,11 +5,13 @@ import CustomRow from '../../common/Row'
 import AddButton from '../../common/AddButton'
 import { SalesOderModel } from '../../../models/sales_order_model'
 import { Button, Select, Space, Table } from 'antd'
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
+import { EditOutlined, DeleteOutlined ,DownloadOutlined} from '@ant-design/icons'
 import { ColumnsType } from 'antd/lib/table'
 import AddSalesOrderModal from './AddSalesOrderModal'
 import SalesOrderService from '../../../services/sales_order_service'
 import DeleteModal from '../../common/DeleteModal'
+import jsPDF from 'jspdf'
+import autoTable from 'jspdf-autotable'
 
 const SalesOrder = () => {
   const [salesOrders, setSalseOrders] = useState<SalesOderModel[]>([]);
@@ -36,6 +38,37 @@ const SalesOrder = () => {
 
   const cancelOrder = () => {
     setOpenAddOrderModal(false)
+  }
+  const generatePdf = () => {
+    const doc = new jsPDF()
+    autoTable(doc, {
+      columns: [
+        { header: 'date', dataKey: 'date' },
+        { header: ' transactionDate', dataKey: 'transactionDate' },
+        { header: 'coustomer', dataKey: 'coustomer' },
+        { header: 'shippingAddress', dataKey: 'shippingAddress' },
+        { header: 'totalBill', dataKey: 'totalBill' },
+        { header: 'status', dataKey: 'status' },
+        { header: 'itemName', dataKey: 'itemName' },
+
+
+
+
+      ],
+      body: salesOrders.map(sales => {
+        return {
+          date: sales.date,
+          transactionDate: sales.transactionDate,
+          coustomer: sales.coustomer,
+          shippingAddress: sales.shippingAddress,
+          totalBill: sales.totalBill,
+          status: sales.status ==1 ? "Completed " :"Not Completed",
+          itemName: sales.itemName,
+
+        };
+      })
+    })
+    doc.save('salesDetails.pdf')
   }
 
   const columns: ColumnsType<SalesOderModel> = [
@@ -141,7 +174,10 @@ const SalesOrder = () => {
       <WrapperCard>
         <CustomRow style={{ justifyContent: "space-between", padding: "16px" }}>
           <h1>Sales Order</h1>
+          <div>
+          <Button style={{margin:"0 16px"}} onClick={generatePdf} shape="circle" icon={<DownloadOutlined/>} type="primary"/>
           <AddButton onClick={() => { setOpenAddOrderModal(true) }} />
+          </div>
         </CustomRow>
         <Table dataSource={salesOrders} columns={columns} style={{ width: "100%", height: "100%" }} />
       </WrapperCard>
