@@ -1,4 +1,4 @@
-import { Button, Space, Table } from 'antd'
+import { Button, Select, Space, Table } from 'antd'
 import { ColumnsType } from 'antd/lib/table'
 import React, { useEffect } from 'react'
 import { EmployeeModel } from '../../models/employee_model'
@@ -11,6 +11,15 @@ import AddUserModal from './AddUserModal'
 import { useState } from "react"
 import EmployeeService from '../../services/employee_service'
 import DeleteModal from '../common/DeleteModal'
+
+const roles: string[] = [
+  "Supervisor",
+  "Delivery boy",
+  "Driver",
+  "Marketing executive",
+  "Cleaner",
+]
+
 const Users = () => {
 
   const [isAddUser, setIsAddUser] = useState<boolean>(false)
@@ -75,8 +84,30 @@ const Users = () => {
     },
     {
       title: "Role",
-      dataIndex: "role",
       key: "role",
+      render: (_, record: EmployeeModel) => {
+        return (<Select
+          defaultValue={record.role}
+          onChange={async (val) => {
+            const e: EmployeeModel = {
+              name: record.name,
+              nic: record.nic,
+              address: record.address,
+              contactNumber: record.contactNumber,
+              role: val,
+              age: record.age,
+              salary: record.salary,
+            }
+            await EmployeeService.updateEmployee(record._id!, e);
+            await refresher();
+          }}>
+          {
+            roles.map(rol => {
+              return <Select.Option key={rol} value={rol}>{rol}</Select.Option>
+            })
+          }
+        </Select>)
+      }
     },
     {
       title: "Address",
@@ -119,7 +150,7 @@ const Users = () => {
       </WrapperCard>
       <AddUserModal handleOk={addUser} handleCancel={cancelUser} isOpen={isAddUser} />
       <AddUserModal handleOk={async () => { await refresher(); setIEditUser(false) }} handleCancel={() => { setIEditUser(false) }} isOpen={isEditUser} employee={selectedUser} />
-      <DeleteModal handleCancel={() => {setIsDeletUser(false) }} handleOk={deleteUser} text="Delete employee" isModalOpen={isDeleteUser}/>
+      <DeleteModal handleCancel={() => { setIsDeletUser(false) }} handleOk={deleteUser} text="Delete employee" isModalOpen={isDeleteUser} />
     </WrapperContainer>
   )
 }

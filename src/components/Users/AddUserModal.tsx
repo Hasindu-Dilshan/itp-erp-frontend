@@ -33,23 +33,25 @@ const AddUserModal = ({ isOpen, handleCancel, handleOk, employee }: Props) => {
 
 
    const createEmployee = async () => {
-      const e: EmployeeModel = {
-         name: name,
-         nic: nic,
-         address: address,
-         contactNumber: contactNumber,
-         role: role,
-         age: age,
-         salary: salary,
+      if (name !== "" && nic !== "" && address !== "" && role !== "" && age !== 0 && salary !== 0 && contactNumber !== "") {
+         const e: EmployeeModel = {
+            name: name,
+            nic: nic,
+            address: address,
+            contactNumber: contactNumber,
+            role: role,
+            age: age,
+            salary: salary,
+         }
+         if (employee) {
+            await EmployeeService.updateEmployee(employee._id!, e)
+               .catch(err => console.log(`update employee failed ${err}`))
+         } else {
+            await EmployeeService.createEmployee(e)
+               .catch(err => console.log(`create employee failed ${err}`))
+         }
+         handleOk();
       }
-      if (employee) {
-         await EmployeeService.updateEmployee(employee._id!, e)
-            .catch(err => console.log(`update employee failed ${err}`))
-      } else {
-         await EmployeeService.createEmployee(e)
-            .catch(err => console.log(`create employee failed ${err}`))
-      }
-      handleOk();
    }
 
 
@@ -119,10 +121,13 @@ const AddUserModal = ({ isOpen, handleCancel, handleOk, employee }: Props) => {
                      label="Employee NIC"
                      rules={stringValidator("Enter employee nic")}
                      initialValue={
-                        nic
+                        employee?.nic
                      }
                   >
-                     <Input placeholder='Enter here'
+                     <Input
+                        maxLength={12}
+                        value={nic}
+                        placeholder='Enter here'
                         onChange={(val) => {
                            if (val) {
                               setNic(val.target.value);
@@ -139,10 +144,12 @@ const AddUserModal = ({ isOpen, handleCancel, handleOk, employee }: Props) => {
                      label="Employee Address"
                      rules={stringValidator("Enter employee address")}
                      initialValue={
-                        address
+                        employee?.address
                      }
                   >
-                     <Input.TextArea placeholder='Enter here'
+                     <Input.TextArea
+                        value={address}
+                        placeholder='Enter here'
                         onChange={(val) => {
                            if (val) {
                               setAddress(val.target.value);
@@ -157,12 +164,15 @@ const AddUserModal = ({ isOpen, handleCancel, handleOk, employee }: Props) => {
                   <Form.Item
                      name={"Role"}
                      label="Role"
+
                      rules={stringValidator("Enter valid role")}
                      initialValue={
-                        role
+                        employee?.role
                      }
                   >
-                     <Select placeholder="select item"
+                     <Select
+                        defaultValue={employee?.role}
+                        placeholder="select item"
                         onChange={(val) => {
                            if (val) {
                               setRole(val);
@@ -185,11 +195,13 @@ const AddUserModal = ({ isOpen, handleCancel, handleOk, employee }: Props) => {
                      label="Age"
                      rules={numberValidator("Please enter valid age")}
                      initialValue={
-                        age
+                        employee?.age
                      }
 
                   >
                      <Input
+                        value={age}
+                        maxLength={3}
                         onChange={(val) => {
                            if (val.target.value) {
                               console.log(val.target.value)
@@ -206,10 +218,12 @@ const AddUserModal = ({ isOpen, handleCancel, handleOk, employee }: Props) => {
                      label="Salary"
                      rules={numberValidator("Please enter valid salary")}
                      initialValue={
-                        salary
+                        employee?.salary
                      }
                   >
                      <Input
+
+                        value={salary}
                         onChange={(val) => {
                            if (val.target.value) {
                               console.log(val.target.value)
@@ -225,10 +239,12 @@ const AddUserModal = ({ isOpen, handleCancel, handleOk, employee }: Props) => {
                      label="Contact Number"
                      rules={stringValidator("Please enter valid contact Number")}
                      initialValue={
-                        contactNumber
+                        employee?.contactNumber
                      }
                   >
                      <Input
+                        value={contactNumber}
+                        maxLength={11}
                         onChange={(val) => {
                            if (val.target.value) {
                               console.log(val.target.value)
