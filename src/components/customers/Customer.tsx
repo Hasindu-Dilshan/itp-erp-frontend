@@ -1,4 +1,3 @@
-import { useReactToPrint } from 'react-to-print';
 import React, { useEffect, useState, useRef } from 'react'
 import { PlusCircleOutlined } from '@ant-design/icons';
 import CustomRow from '../common/Row';
@@ -9,7 +8,7 @@ import Table, { ColumnsType } from 'antd/lib/table';
 import { CustomeModel } from '../../models/customer_model';
 import AddCustomerModal from './AddCustomerModal';
 import CustomerService from '../../services/customer_service';
-import { EditOutlined, DeleteOutlined, VerticalAlignBottomOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, DownloadOutlined  } from '@ant-design/icons';
 import DeleteModal from '../common/DeleteModal';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -165,9 +164,12 @@ const Customer = () => {
     <WrapperContainer>
       <CustomRow>
         <Title level={3}>Customers</Title>
-        <Tooltip title="Add Customer">
-          <Button type="primary" shape="circle" icon={<PlusCircleOutlined />} onClick={() => { setIsAddCustomerOpen(true) }} />
-        </Tooltip>
+        <div>
+          <Button  style={{margin : "0 16px"}} onClick={generatePdf} shape="circle" icon={<DownloadOutlined />} type="primary" />
+          <Tooltip title="Add Customer">
+            <Button type="primary" shape="circle" icon={<PlusCircleOutlined />} onClick={() => { setIsAddCustomerOpen(true) }} />
+          </Tooltip>
+        </div>
       </CustomRow>
       <Table columns={columns} className="table" dataSource={customers} />
       <AddCustomerModal handleOk={async () => { await refresher(); setIsAddCustomerOpen(false); }} handleCancel={closeAddCustomerModal} isOpen={isAddCustomerOpen} />
