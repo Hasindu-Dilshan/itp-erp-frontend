@@ -83,35 +83,14 @@ const AddPurchaseRequest = ({ isOpen, handleCancel, handleOk, request }: Props) 
    const [status, setStatus] = useState<boolean>(false);
    const [requestTo, setRequestTo] = useState<string>("")
    const [requestToName, setRequestToName] = useState<string>("")
-   const [itemName, setItemName] = useState<string>("");
-   const [quantity, setQuantity] = useState<number>(0);
+
    const [totalBill, setTotalBill] = useState<number>(0);
    const [selectedItem, setSelectedItem] = useState<PhurchaseRequestModel>();
    const [isAddModal, setIsAddModal] = useState<boolean>(false);
 
-   const [selectedItems, setSelectedItems] = useState<PurchaseRequestOrderModel[]>([]);
 
 
 
-   const columns: ColumnsType<PurchaseRequestOrderModel> = [
-      {
-         title: "Item Name",
-         dataIndex: "name",
-         key: "name",
-      },
-      {
-         title: "Quantity",
-         dataIndex: "quantity",
-         key: "quantity",
-      },
-      {
-         title: "Unit Price",
-         dataIndex: "unitPrice",
-         key: "unitPrice",
-      },
-
-
-   ]
    const openCloseAddItemModal = () => {
       setIsAddModal(!isAddModal)
    }
@@ -162,13 +141,6 @@ const AddPurchaseRequest = ({ isOpen, handleCancel, handleOk, request }: Props) 
    }, [request])
 
 
-   const data = {
-      requestBy: request?.requestBy,
-      totalBill: request?.totalBill,
-      status: request?.status,
-      requestTo: request?.requestToId,
-      requestToName: request?.requestToId
-   }
 
 
    return (

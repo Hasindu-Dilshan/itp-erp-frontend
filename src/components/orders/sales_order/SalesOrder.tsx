@@ -212,7 +212,7 @@ const SalesOrder = () => {
       </WrapperCard>
       <AddSalesOrderModal handleOk={addOrder} handleCancel={cancelOrder} isOpen={openAddOrderModal} />
       <AddSalesOrderModal handleOk={addOrder} handleCancel={() => { setOpenEditOrderModal(false) }} isOpen={openEditOrderModal} order={selectedSalesItem} />
-      <DeleteModal isModalOpen={deleteModalOpen} handleOk={deleteSalesOrder} handleCancel={() => { setDeleteModalOpen(false) }} text={"Delete delivery order"} />
+      <DeleteModal isModalOpen={deleteModalOpen} handleOk={deleteSalesOrder} handleCancel={() => { setDeleteModalOpen(false) }} text={"Delete sales order"} />
     </WrapperContainer>
   )
 }
