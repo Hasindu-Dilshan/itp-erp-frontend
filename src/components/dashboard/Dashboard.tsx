@@ -14,6 +14,8 @@ import PurchaseRequest from "../purchase_request/PurchaseRequest";
 import PuchaseItems from "../purchase_item/PuchaseItems";
 import Users from "../Users/Users";
 import StockOrder from "../StockOrder/StockOrder";
+
+
 const { Header, Content, Footer, Sider } = Layout;
 const { Title } = Typography;
 type MenuItem = Required<MenuProps>['items'][number];
@@ -42,6 +44,7 @@ const Dashboard = () => {
         getItem('Items', 6),
         getItem('Users', 7,),
         getItem('Stock Orders   ', 8,),
+    
     ];
 
 
@@ -57,7 +60,7 @@ const Dashboard = () => {
         <PurchaseRequest />,
         <PuchaseItems />,
         <Users />,
-        <StockOrder/>
+        <StockOrder/>,
     ];
 
     return (
