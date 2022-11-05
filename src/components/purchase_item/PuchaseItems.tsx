@@ -10,7 +10,8 @@ import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import AddItemModal from './AddItemModal'
 import ItemService from '../../services/item_service'
 import DeleteModal from '../common/DeleteModal'
-
+import jsPDF from 'jspdf'
+import 'jspdf-autotable'
 
 const PuchaseItems = () => {
 
@@ -106,6 +107,16 @@ const PuchaseItems = () => {
       }
     },
   ]
+  const downloadPdf = () => {
+    const doc = new jsPDF()
+    doc.text("ITEM Details", 20, 10)
+    doc.autoTable({
+      theme: "grid",
+      columns: columns.map(col => ({ ...col, dataKey: col.fixed })),
+      body: PuchaseItems
+    })
+    doc.save('table.pdf')
+  }
 
 
   useEffect(() => {
