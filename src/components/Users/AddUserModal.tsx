@@ -77,7 +77,7 @@ const AddUserModal = ({ isOpen, handleCancel, handleOk, employee }: Props) => {
          onCancel={handleCancel}
          onOk={handleOk}
          width={1000}
-         title="Add user"
+         title={employee ? "Edit User" : "Add user"}
          footer={null}
       >
          <Form

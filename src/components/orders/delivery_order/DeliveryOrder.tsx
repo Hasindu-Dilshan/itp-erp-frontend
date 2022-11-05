@@ -168,7 +168,7 @@ const DeliveryOrder = () => {
       }
     },
     {
-      title: "Order Status",
+      title: "Actions",
       key: "status",
       render: (_, record: DeliveryOrderModel) => {
         return <Space size="middle">
