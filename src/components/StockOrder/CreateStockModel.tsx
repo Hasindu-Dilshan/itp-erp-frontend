@@ -51,7 +51,7 @@ const CreateStockModal = ({ shouldOpen, handleOk, handleCancel, order }: Props) 
 
   const createStockOrder = async () => {
     if (name !== "") {
-      console.log(`ordrnqtyu =>${orderqty}`)
+      console.log(orderqty)
       console.log(manufacturer)
       const o: StockOrderModel = {
         name: name,
@@ -74,8 +74,8 @@ const CreateStockModal = ({ shouldOpen, handleOk, handleCancel, order }: Props) 
   const data = {
     itemName: order?.name ? order?.name : "",
     itemManufacturer: order?.manufacturer ? order?.manufacturer :"",
-    itemPrice: order?.price ? order?.price :"",
-    itemQuantity: order?.orderqty ? order?.orderqty :""
+    itemPrice: order?.price ? order?.price :null,
+    itemQuantity: order?.orderqty ? order?.orderqty :null
   }
 
   return (
@@ -174,10 +174,15 @@ const CreateStockModal = ({ shouldOpen, handleOk, handleCancel, order }: Props) 
             <Form.Item
               label="Quantity"
               name={"itemQuantity"}
+              
+              initialValue={
+                order?.orderqty
+              }
               rules={numberValidator("Please enter valid item quantity")}
              // initialValue={data?.itemQuantity}
             >
-              <Input  value={orderqty} onChange={(val) => { setOrderQty(parseInt(val.target.value));console.log(orderqty) }} />
+              <Input  value={orderqty} placeholder={`${orderqty}`}
+              onChange={(val) => {setOrderQty(parseInt(val.target.value)) }} />
             </Form.Item>
           </Col>
         </Row>

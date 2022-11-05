@@ -8,8 +8,10 @@ import WrapperContainer from '../../common/WrapperContainer'
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { Button, Tooltip, Space } from 'antd';
 import CreateDeliveryOrderModal from './CreateDeliveryOrderModal'
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined,DownloadOutlined } from '@ant-design/icons';
 import DeleteModal from '../../common/DeleteModal'
+import jsPDF from 'jspdf'
+import autoTable from 'jspdf-autotable'
 
 const { Title } = Typography;
 
@@ -39,6 +41,34 @@ const DeliveryOrder = () => {
     console.log('Clicked cancel button');
     setOpen(false);
   };
+
+  const generatePdf = () => {
+    const doc = new jsPDF()
+    autoTable(doc, {
+      columns: [
+        { header: 'Date', dataKey: 'date' },
+        { header: 'Transaction_Date', dataKey: 'transactionDate' },
+        { header: 'Customer', dataKey: 'coustomer' },
+        { header: 'Shipping_Address', dataKey: 'shippingAddress' },
+        { header: 'Total Bill', dataKey: 'totalBill' },
+        { header: 'Status', dataKey: 'status' },
+
+      ],
+      body: deliveryOrders.map(order => {
+        return {
+          date: order.date.toString(),
+          transactionDate: order.transactionDate.toString (),
+          coustomer: order.coustomer,
+          shippingAddress: order.shippingAddress,
+          totalBill: order.totalBill,
+          status: order.status,
+
+        };
+      })
+    })
+    doc.save('DeliveryOrderDetails.pdf')
+  }
+
 
   const columns: ColumnsType<DeliveryOrderModel> = [
     // {
@@ -151,9 +181,12 @@ const DeliveryOrder = () => {
     <WrapperContainer>
       <CustomRow>
         <Title level={3}>Delivery Order</Title>
+        <div>
+          <Button style={{margin:"0 16px"}} onClick={generatePdf} shape="circle" icon={<DownloadOutlined/>} type="primary"/>
         <Tooltip title="Add Delivery Order">
           <Button type="primary" shape="circle" icon={<PlusCircleOutlined />} onClick={() => { setOpen(true) }} />
         </Tooltip>
+        </div>
       </CustomRow>
       <Table columns={columns} className="table" dataSource={deliveryOrders} />
       <CreateDeliveryOrderModal

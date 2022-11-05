@@ -6,11 +6,13 @@ import WrapperCard from '../common/WrapperCard'
 import WrapperContainer from '../common/WrapperContainer'
 import { ItemModel } from '../../models/item_model'
 import { ColumnsType } from 'antd/lib/table'
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
+import { EditOutlined, DeleteOutlined,DownloadOutlined } from '@ant-design/icons'
 import AddItemModal from './AddItemModal'
 import ItemService from '../../services/item_service'
 import DeleteModal from '../common/DeleteModal'
-
+import jsPDF from 'jspdf'
+import 'jspdf-autotable'
+import autoTable from 'jspdf-autotable'
 
 const PuchaseItems = () => {
 
@@ -43,6 +45,31 @@ const PuchaseItems = () => {
       await refresher();
       setIsDelete(false);
     }
+  }
+  const generatePdf = () => {
+    const doc = new jsPDF()
+    autoTable(doc, {
+      columns: [
+        { header: 'Name', dataKey: 'name' },
+        { header: ' Price', dataKey: 'price' },
+        { header: 'Stock', dataKey: 'inStock' },
+        { header: 'Manufacturer', dataKey: 'manufacturer' },
+        { header: 'Supplier', dataKey: 'supplier' },
+
+      ],
+      body: items.map(item => {
+        return {
+          name: item.name,
+          price: item.price,
+          inStock: item.inStock ? "InStock": "Out of Stock",
+          manufacturer: item.manufacturer,
+          supplier: item.supplier,
+
+
+        };
+      })
+    })
+    doc.save('ItemsDetails.pdf')
   }
 
   const columns: ColumnsType<ItemModel> = [
@@ -106,7 +133,7 @@ const PuchaseItems = () => {
       }
     },
   ]
-
+  
 
   useEffect(() => {
     ItemService.getDeliveryItems(0, 10)
@@ -122,7 +149,10 @@ const PuchaseItems = () => {
       <WrapperCard>
         <CustomRow style={{ justifyContent: "space-between", padding: "16px" }} >
           <h1>Items</h1>
+          <div>
+          <Button style={{margin:"0 16px"}} onClick={generatePdf} shape="circle" icon={<DownloadOutlined/>} type="primary"/>
           <AddButton onClick={() => { setIsAddItemModal(true) }} />
+          </div>
         </CustomRow>
         <Table dataSource={items} columns={columns} style={{ width: "100%", height: "100%" }} />
       </WrapperCard>
