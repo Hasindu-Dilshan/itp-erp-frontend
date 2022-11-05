@@ -5,7 +5,7 @@ import type { MenuProps } from 'antd';
 import { Layout, Menu } from 'antd';
 import React, { useState } from 'react';
 import { Typography } from 'antd';
-import WrapperCard from "../common/WrapperCard";
+
 import DashboardBody from "./DashboardBody";
 import Customer from "../customers/Customer";
 import DeliveryOrder from "../orders/delivery_order/DeliveryOrder";
@@ -15,11 +15,11 @@ import PurchaseRequest from "../purchase_request/PurchaseRequest";
 import PuchaseItems from "../purchase_item/PuchaseItems";
 import Users from "../Users/Users";
 import StockOrder from "../StockOrder/StockOrder";
-import { IconType } from "antd/lib/notification";
+
 import { BankTwoTone,UserOutlined ,MoneyCollectFilled,LineChartOutlined,StockOutlined,TeamOutlined ,ShoppingCartOutlined,CarFilled} from '@ant-design/icons'
 
 const { Header, Content, Footer, Sider } = Layout;
-const { Title } = Typography;
+
 type MenuItem = Required<MenuProps>['items'][number];
 
 
@@ -38,17 +38,6 @@ const Dashboard = () => {
         } as MenuItem;
     }
     const items: MenuItem[] = [
-<<<<<<< HEAD
-        getItem('Dashboard', 0,),
-        getItem('Customers', 1,),
-        getItem('Delivery Order', 2),
-        getItem('Sales Order', 3),
-        getItem('Purchase Order', 4),
-        // getItem('Purchase Request', 5),
-        getItem('Items', 6),
-        getItem('Users', 7,),
-        getItem('Stock Orders   ', 8,),
-=======
         getItem('Dashboard', 0,<BankTwoTone />),
         getItem('Customers', 1,<UserOutlined />),
         getItem('Delivery Order', 2,<CarFilled />),
@@ -58,7 +47,6 @@ const Dashboard = () => {
         getItem('Items', 6,<ShoppingCartOutlined />),
         getItem('Users', 7,<TeamOutlined />),
         getItem('Stock Orders   ', 8,<StockOutlined />),
->>>>>>> 899a0d7f960439f836724ee5b862bc286379e409
     
     ];
 
