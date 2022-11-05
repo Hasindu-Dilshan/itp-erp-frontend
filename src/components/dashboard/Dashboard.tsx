@@ -43,7 +43,7 @@ const Dashboard = () => {
         getItem('Delivery Order', 2,<CarFilled />),
         getItem('Sales Order', 3,<LineChartOutlined />),
         getItem('Purchase Order', 4,<MoneyCollectFilled />),
-        getItem('Purchase Request', 5),
+        // getItem('Purchase Request', 5),
         getItem('Items', 6,<ShoppingCartOutlined />),
         getItem('Users', 7,<TeamOutlined />),
         getItem('Stock Orders   ', 8,<StockOutlined />),
