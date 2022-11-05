@@ -8,10 +8,12 @@ import WrapperContainer from '../common/WrapperContainer'
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { Button, Tooltip, Space } from 'antd';
 
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined,DownloadOutlined } from '@ant-design/icons';
 import DeleteModal from '../common/DeleteModal'
 import CreateStockModal from './CreateStockModel'
 import { StockOrderModel } from '../../models/stock_order_model'
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 const { Title } = Typography;
 
 
@@ -39,6 +41,28 @@ const StockOrder = () => {
     console.log('Clicked cancel button');
     setOpen(false);
   };
+  const generatePdf = () => {
+    const doc = new jsPDF()
+    autoTable(doc, {
+      columns: [
+        { header: 'Name', dataKey: 'name' },
+        { header: ' Price', dataKey: 'price' },
+        { header: 'Manufacturer', dataKey: 'manufacturer' },
+        { header: 'Order_qty', dataKey: 'orderqty' },
+
+
+      ],
+      body: stockOrders.map(stock => {
+        return {
+          name: stock.name,
+          price: stock.price,
+          manufacturer: stock.manufacturer,
+          orderqty: stock.orderqty,
+        };
+      })
+    })
+    doc.save('stockDetails.pdf')
+  }
 
   const columns: ColumnsType<StockOrderModel> = [
     {
@@ -130,9 +154,12 @@ const StockOrder = () => {
     <WrapperContainer>
       <CustomRow style={{padding : "16px 0"}}>
         <Title level={3}>Stock Orders</Title>
+        <div>
+          <Button style={{margin:"0 16px"}} onClick={generatePdf} shape="circle" icon={<DownloadOutlined/>} type="primary"/>
         <Tooltip title="Add Stock Item">
           <Button type="primary" shape="circle" icon={<PlusCircleOutlined />} onClick={() => { setOpen(true) }} />
         </Tooltip>
+        </div>
       </CustomRow>
       <Table columns={columns} className="table" dataSource={stockOrders} />
       <CreateStockModal

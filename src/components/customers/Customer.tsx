@@ -67,7 +67,7 @@ const Customer = () => {
         };
       })
     })
-    doc.save('table.pdf')
+    doc.save('customerDetails.pdf')
   }
 
 
