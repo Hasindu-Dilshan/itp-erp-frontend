@@ -108,14 +108,7 @@ const PuchaseItems = () => {
     },
   ]
   const downloadPdf = () => {
-    const doc = new jsPDF()
-    doc.text("ITEM Details", 20, 10)
-    doc.autoTable({
-      theme: "grid",
-      columns: columns.map(col => ({ ...col, dataKey: col.fixed })),
-      body: PuchaseItems
-    })
-    doc.save('table.pdf')
+    
   }
 
 
