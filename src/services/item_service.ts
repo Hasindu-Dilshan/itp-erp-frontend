@@ -4,7 +4,7 @@ import { ItemModel } from "../models/item_model"
 import companyId from "../config"
 
 
-const url = "http://127.0.0.1:8090";
+const url = "https://lozzby.herokuapp.com";
 
 
 const getDeliveryItems = async (offset: number, pagination: number): Promise<ItemModel[]> => {
