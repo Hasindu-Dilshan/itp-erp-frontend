@@ -137,7 +137,7 @@ const Customer = () => {
     <WrapperContainer>
       <CustomRow>
         <Title level={3}>Customers</Title>
-        <Tooltip title="Add Delivery Order">
+        <Tooltip title="Add Customer">
           <Button type="primary" shape="circle" icon={<PlusCircleOutlined />} onClick={() => { setIsAddCustomerOpen(true) }} />
         </Tooltip>
       </CustomRow>

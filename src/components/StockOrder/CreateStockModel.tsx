@@ -73,9 +73,9 @@ const CreateStockModal = ({ shouldOpen, handleOk, handleCancel, order }: Props) 
   }
   const data = {
     itemName: order?.name ? order?.name : "",
-    itemManufacturer: manufacturer,
-    itemPrice: price,
-    itemQuantity: orderQty
+    itemManufacturer: order?.manufacturer ? order?.manufacturer :"",
+    itemPrice: order?.price ? order?.price :"",
+    itemQuantity: order?.orderqty ? order?.orderqty :""
   }
 
   return (
