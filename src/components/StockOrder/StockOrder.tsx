@@ -155,7 +155,9 @@ const StockOrder = () => {
       <CustomRow style={{padding : "16px 0"}}>
         <Title level={3}>Stock Orders</Title>
         <div>
+        <Tooltip title="Generate PDF">
           <Button style={{margin:"0 16px"}} onClick={generatePdf} shape="circle" icon={<DownloadOutlined/>} type="primary"/>
+        </Tooltip>
         <Tooltip title="Add Stock Item">
           <Button type="primary" shape="circle" icon={<PlusCircleOutlined />} onClick={() => { setOpen(true) }} />
         </Tooltip>

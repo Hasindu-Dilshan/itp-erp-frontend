@@ -2,6 +2,7 @@
 import http, { post, put } from "../http-common"
 import { DeliveryOrderModel } from "../models/delivery_order_model"
 import companyId from "../config"
+import NotificationService from "./notification_servce";
 const url = "https://lozzby.herokuapp.com";
 
 
@@ -29,7 +30,10 @@ const updateDeliverItem = async (id: string, deliveryOrder: DeliveryOrderModel) 
          customerType: "a",
          companyId: deliveryOrder.companyId,
       }
-   ).then(result => result.status);
+   ).then(result =>{
+      NotificationService.openNotification("Success","Delivery Item Updated Successfuly")
+      return result.status 
+   } );
 }
 
 const createDeliveryItem = async (deliveryOrder: DeliveryOrderModel) => {
@@ -48,15 +52,20 @@ const createDeliveryItem = async (deliveryOrder: DeliveryOrderModel) => {
          companyId: deliveryOrder.companyId,
       },
    ).then(result => {
+      NotificationService.openNotification("Success","Delivery Item Created Successfuly")
+      return result.status 
       console.log(result.data);
-      return result.status;
    }).catch(err => console.log(err));
    // console.log("order created")
 
 }
 
 const deleteDeliveryItem = async (id: string) => {
-   await http.delete(`delivery-order/delete-delivery-order/${id}`).then(result => result.status);
+   await http.delete(`delivery-order/delete-delivery-order/${id}`).then(result =>{
+
+      NotificationService.openNotification("Success","Delivery Item Deleted Successfuly")
+      return result.status 
+   });
 }
 
 const DeliveryOrderService = { getDeliveryItems, updateDeliverItem, createDeliveryItem, deleteDeliveryItem }
