@@ -23,9 +23,10 @@ function App() {
   }
   return (
     <div className="App">
-      {
+      {/* {
         userLoggedIn === "NOT_LOGGED_IN" ? <Signin stateChanger={() => { stateChanger() }} /> : userLoggedIn === "SIGNUP" ? <SignUp stateChanger={() => { stateChanger() }} /> : <Dashboard stateChanger={() => { stateChanger() }} />
-      }
+      } */}
+      <Dashboard stateChanger={stateChanger} />
     </div>
   );
 }
