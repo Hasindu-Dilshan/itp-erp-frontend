@@ -1,12 +1,16 @@
 import React from 'react'
 import { Button, Card, Checkbox, Form, Input, Radio, Select, TreeSelect, Upload } from 'antd'
-import WrapperCard from '../common/WrapperCard';
-import WrapperContainer from '../common/WrapperContainer';
+
 import "./SignUp.css";
 import image from "../../Assets/Logo.png"
 import { PlusOutlined } from '@ant-design/icons';
 
-const SignUp = () => {
+
+interface Props {
+    stateChanger : ()=>void
+}
+
+const SignUp = ({stateChanger}:Props) => {
     const onFinish = (values: any) => {
         console.log('Success:', values);
     };

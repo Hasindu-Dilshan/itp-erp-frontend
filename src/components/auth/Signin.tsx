@@ -1,9 +1,15 @@
 import { Button, Card, Checkbox, Form, Input } from 'antd'
 import WrapperCard from '../common/WrapperCard';
-import WrapperContainer from '../common/WrapperContainer';
+
 import "./SignIn.css"
 import image from "../../Assets/Logo.png"
-const Signin = () => {
+
+
+interface Props {
+    stateChanger : ()=>void
+}
+
+const Signin = ({stateChanger}:Props) => {
     const onFinish = (values: any) => {
         console.log('Success:', values);
     };
@@ -11,6 +17,10 @@ const Signin = () => {
     const onFinishFailed = (errorInfo: any) => {
         console.log('Failed:', errorInfo);
     };
+
+const login = ()=>{
+        
+}
     return (
         <div className="WrapperContainer">
             <img src={image} width={200}/> <br/><br/><br/><br/><br/><br/><br/><br/>
@@ -48,7 +58,11 @@ const Signin = () => {
                         </Form.Item>
 
                         <Form.Item>
-                            <Button type="primary" htmlType="submit">
+                            <Button type="primary" htmlType="submit"
+onClick={()=>{
+    login()
+}}
+>
                                 Submit
                             </Button>
                         </Form.Item>
