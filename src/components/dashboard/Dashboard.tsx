@@ -23,8 +23,11 @@ const { Header, Content, Footer, Sider } = Layout;
 
 type MenuItem = Required<MenuProps>['items'][number];
 
+interface Props {
+    stateChanger : ()=>void
+}
 
-const Dashboard = () => {
+const Dashboard = ({stateChanger}:Props) => {
     function getItem(
         label: React.ReactNode,
         key: number,

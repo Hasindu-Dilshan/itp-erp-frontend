@@ -141,7 +141,7 @@ const AddPurchaseOrder = ({ shouldOpen, handleOk, handleCancel, order }: Props) 
 
    return (
       <Modal
-         title={order ? "Edit Order" : "Create Delivery Order"}
+         title={order ? "Edit Order" : "Create Purchase Order"}
          open={shouldOpen}
          onCancel={handleCancel}
          width={1000}
