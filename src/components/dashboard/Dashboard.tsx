@@ -17,6 +17,7 @@ import Users from "../Users/Users";
 import StockOrder from "../StockOrder/StockOrder";
 
 import { BankTwoTone,UserOutlined ,MoneyCollectFilled,LineChartOutlined,StockOutlined,TeamOutlined ,ShoppingCartOutlined,CarFilled} from '@ant-design/icons'
+import Home from "./home";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -55,7 +56,7 @@ const Dashboard = () => {
     const [activeIndex, setActiveIndex] = useState(0);
 
     const bodyContainer: JSX.Element[] = [
-        <DashboardBody />,
+        <Home />,
         <Customer />,
         <DeliveryOrder />,
         <SalesOrder />,
