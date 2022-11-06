@@ -1,4 +1,4 @@
-import { Button, Select, Space, Table, Tooltip } from 'antd'
+import { Button, Input, Select, Space, Table, Tooltip } from 'antd'
 import { ColumnsType } from 'antd/lib/table'
 import React, { useEffect } from 'react'
 import { EmployeeModel } from '../../models/employee_model'
@@ -6,7 +6,7 @@ import AddButton from '../common/AddButton'
 import CustomRow from '../common/Row'
 import WrapperCard from '../common/WrapperCard'
 import WrapperContainer from '../common/WrapperContainer'
-import { EditOutlined, DeleteOutlined ,DownloadOutlined} from '@ant-design/icons'
+import { EditOutlined, DeleteOutlined ,DownloadOutlined,SelectOutlined} from '@ant-design/icons'
 import AddUserModal from './AddUserModal'
 import { useState } from "react"
 import EmployeeService from '../../services/employee_service'
@@ -100,6 +100,35 @@ const Users = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => {
+        return <>
+          <Input
+            value={selectedKeys[0]}
+            onChange={(val) => {
+              setSelectedKeys(val.target.value ? [val.target.value] : [])
+              confirm({closeDropdown : false})
+            }}
+            onPressEnter={() => {
+              confirm()
+            }}
+            onBlur={() => {
+              confirm()
+            }}
+          ></Input>
+          <Button type="primary"
+            onClick={() => { confirm(); }}>Search
+          </Button>
+          
+          
+        </>
+      },
+      filterIcon: () => {
+        return <SelectOutlined style={{ color: "red" }} />
+      },
+      onFilter: (value, record) => {
+        return record.name.toLowerCase().includes(value.toString().toLowerCase())
+      }
+      
     },
     {
       title: "Nic",
